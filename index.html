@@ -35,47 +35,70 @@
     </header>
 
     <main class="max-w-7xl mx-auto px-4 py-6">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
             <div class="bg-white p-4 rounded-xl shadow-xs border border-slate-200">
-                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Pendapatan (Gaji)</p>
-                <h3 class="text-xl font-bold text-slate-800 mt-1">Rp 7.590.000</h3>
+                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Gaji Masuk</p>
+                <h3 class="text-lg font-bold text-slate-800 mt-1">Rp 7.590.000</h3>
                 <span class="text-[10px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-medium mt-2 inline-block">Masuk Rek 1</span>
             </div>
-            <div class="bg-yellow-50 p-4 rounded-xl shadow-xs border border-yellow-200">
+            <div class="bg-yellow-50/60 p-4 rounded-xl shadow-xs border border-yellow-200">
                 <p class="text-xs font-semibold text-yellow-700 uppercase tracking-wider">Rekening 1 (Utama)</p>
-                <h3 id="saldoRek1" class="text-xl font-bold text-yellow-800 mt-1">Rp 0</h3>
-                <p class="text-[10px] text-yellow-600 mt-1">Kost + Asuransi + Simpanan Bersih</p>
+                <h3 id="saldoRek1" class="text-lg font-bold text-yellow-800 mt-1">Rp 0</h3>
+                <p class="text-[10px] text-yellow-600 mt-1">Kost + Asrn + Simpanan</p>
             </div>
-            <div class="bg-orange-50 p-4 rounded-xl shadow-xs border border-orange-200">
+            <div class="bg-orange-50/60 p-4 rounded-xl shadow-xs border border-orange-200">
                 <p class="text-xs font-semibold text-orange-700 uppercase tracking-wider">Rekening 2 (Operasional)</p>
-                <h3 id="saldoRek2" class="text-xl font-bold text-orange-800 mt-1">Rp 0</h3>
-                <p class="text-[10px] text-orange-600 mt-1">Wajib Ditransfer: Tagihan + Listrik + Belanja</p>
+                <h3 id="saldoRek2" class="text-lg font-bold text-orange-800 mt-1">Rp 0</h3>
+                <p class="text-[10px] text-orange-600 mt-1">Transfer: Tagihan + Belanja</p>
+            </div>
+            <div class="bg-blue-50 p-4 rounded-xl shadow-xs border border-blue-200">
+                <p class="text-xs font-semibold text-blue-700 uppercase tracking-wider">Tabungan Tercapai</p>
+                <h3 id="tabunganTercapai" class="text-lg font-bold text-blue-800 mt-1">Rp 0</h3>
+                <p class="text-[10px] text-blue-600 mt-1">Total akumulasi s/d bulan terpilih</p>
             </div>
             <div class="bg-emerald-50 p-4 rounded-xl shadow-xs border border-emerald-200">
-                <p class="text-xs font-semibold text-emerald-700 uppercase tracking-wider">Proyeksi Tabungan Des</p>
-                <h3 class="text-xl font-bold text-emerald-800 mt-1">Rp 20.747.034</h3>
-                <span class="text-[10px] text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full font-medium mt-2 inline-block">Surplus Aman</span>
+                <p class="text-xs font-semibold text-emerald-700 uppercase tracking-wider">Proyeksi Akhir Des</p>
+                <h3 id="proyeksiAkhir" class="text-lg font-bold text-emerald-800 mt-1">Rp 20.747.034</h3>
+                <span class="text-[10px] text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full font-medium mt-1 inline-block">+ Sisa Uang Setoran</span>
             </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
-            <div class="bg-white p-5 rounded-xl shadow-xs border border-slate-200 lg:col-span-1">
-                <div class="flex justify-between items-center border-b border-slate-100 pb-3 mb-4">
-                    <h2 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                        <span>📋</span> Checklist Tagihan Bulan Ini
-                    </h2>
-                    <span id="tagihanCount" class="text-xs bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded-full">0/0</span>
+            <div class="space-y-4 lg:col-span-1">
+                <div class="bg-white p-5 rounded-xl shadow-xs border border-slate-200">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-3 mb-4">
+                        <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                            <span>📋</span> Checklist Pembayaran Tagihan
+                        </h2>
+                        <span id="tagihanCount" class="text-xs bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded-full">0/0</span>
+                    </div>
+                    <div id="checklistContainer" class="space-y-2"></div>
+                    
+                    <div class="mt-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                        <p class="text-[11px] text-slate-600 leading-relaxed">
+                            Instruksi Pindahan: Transfer <strong id="instruksiPindahan" class="text-orange-600">Rp 0</strong> ke **Rekening 2**.
+                        </p>
+                    </div>
                 </div>
-                
-                <div id="checklistContainer" class="space-y-2">
+
+                <div class="bg-white p-5 rounded-xl shadow-xs border border-slate-200 border-l-4 border-l-emerald-600">
+                    <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2 mb-1">
+                        <span>💰</span> Setor Sisa Uang H-1 Gajian
+                    </h2>
+                    <p class="text-[10px] text-slate-400 mb-3">Masukkan sisa saldo Rekening 2 sebelum gajian baru untuk dialihkan langsung menjadi tabungan bersih tambahan.</p>
+                    
+                    <div class="flex gap-2">
+                        <input type="number" id="leftoverInput" placeholder="Contoh: 45000" class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-2 outline-none focus:border-emerald-600">
+                        <button onclick="saveLeftover()" class="bg-[#2d6a4f] hover:bg-[#1e5128] text-white font-bold text-xs px-4 py-2 rounded transition-colors whitespace-nowrap cursor-pointer">
+                            + Setor
+                        </button>
                     </div>
 
-                <div class="mt-5 p-4 bg-slate-50 rounded-lg border border-slate-200">
-                    <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">💡 Instruksi Transfer Gaji</h4>
-                    <p class="text-xs text-slate-600 leading-relaxed">
-                        Pindahkan tepat sebesar <strong id="instruksiPindahan" class="text-orange-600">Rp 0</strong> dari Rekening 1 ke **Rekening 2** untuk mengamankan seluruh operasional dan cicilan di atas.
-                    </p>
+                    <div id="leftoverBadgeContainer" class="mt-3 p-2 bg-emerald-50 rounded border border-emerald-100 flex justify-between items-center hidden">
+                        <span class="text-[11px] text-slate-600">Telah disetor H-1: <strong id="leftoverValueText" class="text-emerald-700 font-bold">Rp 0</strong></span>
+                        <button onclick="deleteLeftover()" class="text-rose-600 hover:text-rose-800 font-bold text-[10px] bg-white px-2 py-0.5 border border-rose-200 rounded cursor-pointer">Hapus</button>
+                    </div>
                 </div>
             </div>
 
@@ -119,8 +142,7 @@
                                 <th class="p-3 text-center" style="width: 80px;">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody id="expenseTableBody" class="divide-y divide-slate-100">
-                            </tbody>
+                        <tbody id="expenseTableBody" class="divide-y divide-slate-100"></tbody>
                     </table>
                     <div id="emptyState" class="text-center py-8 text-slate-400 hidden">
                         Belum ada pengeluaran harian tercatat untuk bulan ini.
@@ -132,19 +154,21 @@
     </main>
 
     <script>
-        // Master Data Riil Sesuai Hasil Simulasi
+        const monthOrder = ["Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        
         const financialData = {
-            Mei: { gopay: 1406669, spay: 219278, tiktok: 465034, trvlk: 266000, inddna: 129000, rtn438: 439000, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 1210053, rek1: 3330053, rek2: 4724981 },
-            Juni: { gopay: 1305952, spay: 81702, tiktok: 305041, trvlk: 0, inddna: 129000, rtn438: 439000, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 1714346, rek1: 3834346, rek2: 4060695 },
-            Juli: { gopay: 725641, spay: 81700, tiktok: 190470, trvlk: 0, inddna: 129000, rtn438: 439000, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 2294659, rek1: 4414659, rek2: 3175341 },
-            Agustus: { gopay: 165867, spay: 27095, tiktok: 178698, trvlk: 0, inddna: 129000, rtn438: 439000, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 2909038, rek1: 5029038, rek2: 2560962 },
-            September: { gopay: 0, spay: 27095, tiktok: 118116, trvlk: 0, inddna: 129000, rtn438: 439000, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 3074905, rek1: 5194905, rek2: 2395095 },
-            Oktober: { gopay: 0, spay: 27097, tiktok: 52511, trvlk: 0, inddna: 129000, rtn438: 0, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 3513903, rek1: 5633903, rek2: 1956097 },
+            Mei: { gopay: 1406669, spay: 219278, tiktok: 465034, trvlk: 266000, inddna: 129000, rtn438: 439000, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 745019, rek1: 2865019, rek2: 4724981 },
+            Juni: { gopay: 1305952, spay: 81702, tiktok: 305041, trvlk: 0, inddna: 129000, rtn438: 439000, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 1409305, rek1: 3529305, rek2: 4060695 },
+            Juli: { gopay: 725641, spay: 81700, tiktok: 190470, trvlk: 0, inddna: 129000, rtn438: 439000, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 2104189, rek1: 4224189, rek2: 3365811 },
+            Agustus: { gopay: 165867, spay: 27095, tiktok: 178698, trvlk: 0, inddna: 129000, rtn438: 439000, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 2730340, rek1: 4850340, rek2: 2739660 },
+            September: { gopay: 0, spay: 27095, tiktok: 118116, trvlk: 0, inddna: 129000, rtn438: 439000, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 2956789, rek1: 5076789, rek2: 2513211 },
+            Oktober: { gopay: 0, spay: 27097, tiktok: 52511, trvlk: 0, inddna: 129000, rtn438: 0, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 3461392, rek1: 5581392, rek2: 2008608 },
             November: { gopay: 0, spay: 0, tiktok: 0, trvlk: 0, inddna: 0, rtn438: 0, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 3670000, rek1: 5790000, rek2: 1800000 },
             Desember: { gopay: 0, spay: 0, tiktok: 0, trvlk: 0, inddna: 0, rtn438: 0, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 3670000, rek1: 5790000, rek2: 1800000 }
         };
 
         const BUDGET_LIMIT = 1500000;
+        const BASE_TOTAL_PROJECTION = 20747034;
 
         function formatRupiah(number) {
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
@@ -154,17 +178,50 @@
             return document.getElementById('monthSelector').value;
         }
 
-        // FUNGSI UTAMA: RENDER DASHBOARD
+        // RE-CALCULATE TABUNGAN TERCAPAI & PROYEKSI SECARA DINAMIS
+        function renderSavingsMetrics() {
+            const currentMonth = getActiveMonth();
+            const currentIdx = monthOrder.indexOf(currentMonth);
+            
+            let runningSavings = 0;
+            let totalLeftoverAllMonths = 0;
+
+            monthOrder.forEach((m, idx) => {
+                const extraLeftover = parseInt(localStorage.getItem(`leftover_${m}`)) || 0;
+                totalLeftoverAllMonths += extraLeftover;
+                
+                if (idx <= currentIdx) {
+                    runningSavings += (financialData[m].simpan + extraLeftover);
+                }
+            });
+
+            document.getElementById('tabunganTercapai').innerText = formatRupiah(runningSavings);
+            document.getElementById('proyeksiAkhir').innerText = formatRupiah(BASE_TOTAL_PROJECTION + totalLeftoverAllMonths);
+        }
+
+        // ENGINE UTAMA RENDER VISUAL
         function render() {
             const currentMonth = getActiveMonth();
             const monthData = financialData[currentMonth];
 
-            // Render Ringkasan Saldo
             document.getElementById('saldoRek1').innerText = formatRupiah(monthData.rek1);
             document.getElementById('saldoRek2').innerText = formatRupiah(monthData.rek2);
             document.getElementById('instruksiPindahan').innerText = formatRupiah(monthData.rek2);
 
-            // Generate Array Tagihan Aktif (Hanya tampilkan jika nominal > 0)
+            // Perhitungan Metrik Tabungan Bersih & Bonus Leftover
+            renderSavingsMetrics();
+
+            // Render Panel Sisa Uang H-1
+            const currentLeftover = parseInt(localStorage.getItem(`leftover_${currentMonth}`)) || 0;
+            const badgeContainer = document.getElementById('leftoverBadgeContainer');
+            if (currentLeftover > 0) {
+                document.getElementById('leftoverValueText').innerText = formatRupiah(currentLeftover);
+                badgeContainer.classList.remove('hidden');
+            } else {
+                badgeContainer.classList.add('hidden');
+            }
+
+            // Checklist Tagihan Generator
             const checklistContainer = document.getElementById('checklistContainer');
             checklistContainer.innerHTML = '';
             
@@ -178,10 +235,9 @@
                 { id: 'lstk', name: 'Tagihan Listrik & Pulsa', amount: monthData.lstk }
             ].filter(item => item.amount > 0);
 
-            // Ambil data checklist lokal
             const savedChecklist = JSON.parse(localStorage.getItem(`check_${currentMonth}`)) || {};
-
             let checkedCount = 0;
+
             tagihanList.forEach(item => {
                 const isChecked = savedChecklist[item.id] ? 'checked' : '';
                 if(savedChecklist[item.id]) checkedCount++;
@@ -198,21 +254,38 @@
             });
             document.getElementById('tagihanCount').innerText = `${checkedCount}/${tagihanList.length}`;
 
-            // Render Belanja Harian
             renderExpenses();
         }
 
-        // TANGGANI CHECKLIST
+        // INTERAKSI: CHECKLIST TAGIHAN
         function toggleChecklist(id) {
             const currentMonth = getActiveMonth();
             const savedChecklist = JSON.parse(localStorage.getItem(`check_${currentMonth}`)) || {};
-            
             savedChecklist[id] = !savedChecklist[id];
             localStorage.setItem(`check_${currentMonth}`, JSON.stringify(savedChecklist));
             render();
         }
 
-        // RENDER EXPENSES (BELANJA)
+        // INTERAKSI: SIMPAN SISA UANG H-1
+        function saveLeftover() {
+            const currentMonth = getActiveMonth();
+            const input = document.getElementById('leftoverInput');
+            const val = parseInt(input.value) || 0;
+            
+            if (val < 0) return;
+            localStorage.setItem(`leftover_${currentMonth}`, val);
+            input.value = '';
+            render();
+        }
+
+        // INTERAKSI: HAPUS SETORAN SISA UANG
+        function deleteLeftover() {
+            const currentMonth = getActiveMonth();
+            localStorage.removeItem(`leftover_${currentMonth}`);
+            render();
+        }
+
+        // ENGINE: LOG BELANJA HARIAN
         function renderExpenses() {
             const currentMonth = getActiveMonth();
             const expenses = JSON.parse(localStorage.getItem(`exp_${currentMonth}`)) || [];
@@ -220,8 +293,8 @@
             const emptyState = document.getElementById('emptyState');
             
             tbody.innerHTML = '';
-            
             let totalSpent = 0;
+
             expenses.forEach((exp, index) => {
                 totalSpent += exp.amount;
                 tbody.innerHTML += `
@@ -241,18 +314,11 @@
                 emptyState.classList.add('hidden');
             }
 
-            // Hitung sisa budget belanja
             const remaining = BUDGET_LIMIT - totalSpent;
             const sisaElement = document.getElementById('sisaBelanja');
             sisaElement.innerText = formatRupiah(remaining);
+            sisaElement.className = remaining < 0 ? "text-sm font-bold text-rose-600" : "text-sm font-bold text-emerald-600";
 
-            if(remaining < 0) {
-                sisaElement.className = "text-sm font-bold text-rose-600";
-            } else {
-                sisaElement.className = "text-sm font-bold text-emerald-600";
-            }
-
-            // Update Progress Bar
             const percent = Math.min((totalSpent / BUDGET_LIMIT) * 100, 100);
             const progressBar = document.getElementById('budgetProgressBar');
             progressBar.style.width = `${percent}%`;
@@ -266,7 +332,6 @@
             }
         }
 
-        // TAMBAH CATATAN BELANJA
         function addExpense(e) {
             e.preventDefault();
             const currentMonth = getActiveMonth();
@@ -274,21 +339,14 @@
             const amountInput = document.getElementById('expAmount');
 
             const expenses = JSON.parse(localStorage.getItem(`exp_${currentMonth}`)) || [];
-            expenses.push({
-                desc: descInput.value,
-                amount: parseInt(amountInput.value)
-            });
-
+            expenses.push({ desc: descInput.value, amount: parseInt(amountInput.value) });
             localStorage.setItem(`exp_${currentMonth}`, JSON.stringify(expenses));
             
-            // Reset Form
             descInput.value = '';
             amountInput.value = '';
-            
             render();
         }
 
-        // HAPUS BELANJA
         function deleteExpense(index) {
             const currentMonth = getActiveMonth();
             const expenses = JSON.parse(localStorage.getItem(`exp_${currentMonth}`)) || [];
@@ -301,7 +359,6 @@
             render();
         }
 
-        // Inisialisasi awal saat halaman dimuat
         window.onload = function() {
             render();
         };
