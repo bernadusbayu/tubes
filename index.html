@@ -124,11 +124,11 @@
                     </div>
                     <div class="sm:col-span-2">
                         <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Keterangan / Sumber</label>
-                        <input type="text" id="incDesc" required placeholder="Contoh: Bonus Project Kelar" class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-1.5 outline-none focus:border-emerald-600">
+                        <input type="text" id="incDesc" required placeholder="Contoh: Gaji Pokok PT X" class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-1.5 outline-none focus:border-emerald-600">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nominal (Rp)</label>
-                        <input type="number" id="incAmount" required placeholder="500000" class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-1.5 outline-none focus:border-emerald-600">
+                        <input type="number" id="incAmount" required placeholder="7590000" class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-1.5 outline-none focus:border-emerald-600">
                     </div>
                     <div class="sm:col-span-3 mt-1">
                         <button type="submit" class="w-full bg-[#2d6a4f] hover:bg-[#1e5128] text-white font-bold text-xs py-2 px-4 rounded transition-colors shadow-xs cursor-pointer text-center">
@@ -263,24 +263,26 @@
             return document.getElementById('monthSelector').value;
         }
 
-        // AMBIL DAFTAR PEMASUKAN BULANAN (Otomatis mengisi baseline jika kosong)
+        // FIXED: AMBIL DATA DARI LOCAL STORAGE TANPA LOGIKA FORCING YANG SALAH
         function getIncomesList(m) {
-            let incomes = JSON.parse(localStorage.getItem(`inc_${m}`));
-            if (!incomes || incomes.length === 0) {
-                incomes = [{ category: 'Gaji Pokok', desc: 'Gaji Pokok Baseline FiberStar', amount: BASE_GAJI, time: 'Sistem' }];
-                localStorage.setItem(`inc_${m}`, JSON.stringify(incomes));
+            let incomesRaw = localStorage.getItem(`inc_${m}`);
+            
+            // Jika benar-benar belum pernah diinisialisasi (null), berikan baseline rekomendasi awal
+            if (incomesRaw === null) {
+                const defaultIncomes = [{ category: 'Gaji Pokok', desc: 'Gaji Pokok Baseline FiberStar', amount: BASE_GAJI, time: 'Sistem' }];
+                localStorage.setItem(`inc_${m}`, JSON.stringify(defaultIncomes));
+                return defaultIncomes;
             }
-            return incomes;
+            
+            // Jika sudah ada (termasuk array kosong [] karena dihapus pengguna), biarkan apa adanya
+            return JSON.parse(incomesRaw);
         }
 
-        // RUMUS MATEMATIKA UTAMA YANG DINAMIS TERHADAP LOG PEMASUKAN
         function getCalculatedData(m) {
             const debts = rawDebts[m];
             const incomes = getIncomesList(m);
             
-            // Total gaji didapatkan dari penjumlahan semua item uang masuk bulan tersebut
             const gaji = incomes.reduce((sum, item) => sum + item.amount, 0);
-            
             const tagihan_var = debts.gopay + debts.spay + debts.tiktok + debts.trvlk + debts.inddna + debts.rtn438;
             const tetap = kost_val + asrn_val + lstk_val;
             
@@ -395,13 +397,11 @@
             renderExpenses();
         }
 
-        // UTALITAS RE-USABLE TIMESTAMP GENERATOR
         function getTimestamp() {
             const now = new Date();
             return now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) + ', ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
         }
 
-        // INTERAKSI UTAMA: PENGELOLAAN LOG PEMASUKAN (INCOMES)
         function renderIncomes() {
             const currentMonth = getActiveMonth();
             const incomes = getIncomesList(currentMonth);
@@ -435,12 +435,7 @@
             const amountInput = document.getElementById('incAmount');
 
             const incomes = getIncomesList(currentMonth);
-            incomes.push({
-                category: categoryInput.value,
-                desc: descInput.value,
-                amount: parseInt(amountInput.value),
-                time: getTimestamp()
-            });
+            incomes.push({ category: categoryInput.value, desc: descInput.value, amount: parseInt(amountInput.value), time: getTimestamp() });
 
             localStorage.setItem(`inc_${currentMonth}`, JSON.stringify(incomes));
             descInput.value = '';
@@ -448,6 +443,7 @@
             render();
         }
 
+        // FIXED: PENGHAPUSAN AMAN TANPA RE-INJEKSI OTOMATIS
         function deleteIncome(index) {
             const currentMonth = getActiveMonth();
             const incomes = getIncomesList(currentMonth);
@@ -456,7 +452,6 @@
             render();
         }
 
-        // SINKRONISASI SALDO M-BANKING
         function updateGlobalBalance() {
             const currentMonth = getActiveMonth();
             const input = document.getElementById('globalBalanceInput');
@@ -481,7 +476,6 @@
             render();
         }
 
-        // PENGELOLAAN LOG BELANJA HARIAN (EXPENSES)
         function renderExpenses() {
             const currentMonth = getActiveMonth();
             const expenses = JSON.parse(localStorage.getItem(`exp_${currentMonth}`)) || [];
@@ -501,7 +495,7 @@
                             </span>
                         </td>
                         <td class="p-2.5 text-slate-700 font-medium truncate max-w-[120px]">${exp.desc}</td>
-                        <td class="p-2.5 text-right font-bold text-slate-800 font-mono">${formatRupiah(exp.amount)}</td>
+                        <td class="p-3 text-right font-bold text-slate-800 font-mono">${formatRupiah(exp.amount)}</td>
                         <td class="p-2.5 text-center">
                             <button onclick="deleteExpense(${index})" class="text-rose-600 hover:text-rose-900 font-semibold text-[10px] bg-rose-50 px-1.5 py-0.5 rounded cursor-pointer">Hapus</button>
                         </td>
