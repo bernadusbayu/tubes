@@ -10,7 +10,6 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
         
-        /* Mengeliminasi scrollbar bawaan browser agar transisi slide terasa seperti aplikasi native mobile */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -77,7 +76,7 @@
         <div class="lg:hidden flex bg-slate-200 p-1 rounded-xl mb-4 gap-1 sticky top-[60px] z-40 backdrop-blur-md bg-opacity-90">
             <button id="tab0" onclick="scrollToSlide(0)" class="flex-1 text-center py-2 text-xs font-bold rounded-lg bg-[#2d6a4f] text-white shadow-xs transition-all duration-200">📋 Tagihan</button>
             <button id="tab1" onclick="scrollToSlide(1)" class="flex-1 text-center py-2 text-xs font-bold rounded-lg text-slate-600 transition-all duration-200">💰 Masuk</button>
-            <button id="tab2" onclick="scrollToSlide(2)" class="flex-1 text-center py-2 text-xs font-bold rounded-lg text-slate-600 transition-all duration-200">🛍️ Belanja</button>
+            <button id="tab2" onclick="scrollToSlide(2)" class="flex-1 text-center py-2 text-xs font-bold rounded-lg text-slate-600 transition-all duration-200">🛍 *Belanja*</button>
         </div>
 
         <div id="slidesContainer" onscroll="handleSlidesScroll()" class="flex lg:grid lg:grid-cols-3 gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth w-full hide-scrollbar pb-6 lg:pb-0">
@@ -164,18 +163,27 @@
             </div>
 
             <div id="slide2" class="w-full lg:w-full shrink-0 snap-start bg-white p-5 rounded-xl shadow-xs border border-slate-200">
-                <div class="border-b border-slate-100 pb-3 mb-4 flex justify-between items-center gap-2">
-                    <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2">
-                        <span>🛍️</span> Log Belanja Harian
-                    </h2>
-                    <div class="flex items-center gap-2">
-                        <button onclick="openChartModal()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-[10px] py-1 px-2 rounded border border-indigo-200 cursor-pointer shadow-2xs">📊 Grafik</button>
-                        <span id="sisaBelanja" class="text-xs font-bold text-emerald-600">Rp 1.500.000</span>
+                <div class="border-b border-slate-100 pb-3 mb-3 flex flex-col gap-2">
+                    <div class="flex justify-between items-center w-full">
+                        <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                            <span>🛍️</span> Log Belanja Harian
+                        </h2>
+                        <div class="flex items-center gap-1.5">
+                            <button onclick="openChartModal()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-[10px] py-1 px-2 rounded border border-indigo-200 cursor-pointer shadow-2xs">📊 Grafik</button>
+                            <span id="sisaBelanja" class="text-xs font-bold text-emerald-600">Rp 1.500.000</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-2 bg-slate-100 p-2 rounded-lg border border-slate-200">
+                        <label for="expenseFilterDate" class="text-[10px] font-bold text-slate-500 uppercase whitespace-nowrap">Pilih Tanggal:</label>
+                        <input type="date" id="expenseFilterDate" onchange="renderExpenses()" class="bg-white text-xs text-slate-800 font-bold rounded px-2.5 py-1 outline-none border border-slate-300 w-full cursor-pointer focus:border-emerald-600">
                     </div>
                 </div>
+
                 <div class="w-full bg-slate-100 rounded-full h-1.5 mb-4 overflow-hidden">
                     <div id="budgetProgressBar" class="bg-emerald-600 h-1.5 rounded-full transition-all duration-300" style="width: 0%"></div>
                 </div>
+
                 <form id="expenseForm" onsubmit="addExpense(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
                     <div class="sm:col-span-3">
                         <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Kategori Belanja</label>
@@ -197,23 +205,24 @@
                         <input type="number" id="expAmount" required placeholder="30000" class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-1.5 outline-none focus:border-emerald-600">
                     </div>
                     <div class="sm:col-span-3 mt-1">
-                        <button type="submit" class="w-full bg-[#2d6a4f] hover:bg-[#1e5128] text-white font-bold text-xs py-2 rounded transition-colors cursor-pointer text-center">+ Catat Pengeluaran</button>
+                        <button type="submit" class="w-full bg-[#2d6a4f] hover:bg-[#1e5128] text-white font-bold text-xs py-2 rounded transition-colors cursor-pointer text-center">+ Catat Pengeluaran Hari Ini</button>
                     </div>
                 </form>
+
                 <div class="overflow-x-auto hide-scrollbar">
                     <table class="w-full text-left text-xs border-collapse whitespace-nowrap">
                         <thead>
                             <tr class="bg-slate-100 text-slate-600 font-bold uppercase border-b border-slate-200">
-                                <th class="p-2">Waktu</th>
+                                <th class="p-2" style="width: 70px;">Jam</th>
                                 <th class="p-2">Kategori</th>
                                 <th class="p-2">Barang</th>
                                 <th class="p-2 text-right">Nominal</th>
-                                <th class="p-2 text-center">Aksi</th>
+                                <th class="p-2 text-center" style="width: 50px;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="expenseTableBody" class="divide-y divide-slate-100"></tbody>
                     </table>
-                    <div id="emptyState" class="text-center py-6 text-slate-400 hidden">Belum ada pengeluaran harian.</div>
+                    <div id="emptyState" class="text-center py-6 text-slate-400 hidden font-medium">🍃 Tidak ada transaksi belanja pada tanggal terpilih.</div>
                 </div>
             </div>
 
@@ -260,7 +269,21 @@
             return document.getElementById('monthSelector').value;
         }
 
-        // UPDATED: Sinkronisasi Tab Navigasi Aktif Mengikuti 100% Lebar Screen Slide HP
+        // BARU: SINKRONISASI DROPDOWN BULAN & KALENDER BELANJA HARIAN
+        function syncDatePickerWithMonth() {
+            const currentMonth = getActiveMonth();
+            const monthMap = { "Mei": "05", "Juni": "06", "Juli": "07", "Agustus": "08", "September": "09", "Oktober": "10", "November": "11", "Desember": "12" };
+            const datePicker = document.getElementById('expenseFilterDate');
+            
+            if (currentMonth === "Mei") {
+                // Diatur ke tanggal 17 Mei 2026 (Hari ini)
+                datePicker.value = "2026-05-17";
+            } else {
+                // Untuk bulan masa depan, default langsung ke tanggal 1 di bulan bersangkutan
+                datePicker.value = `2026-${monthMap[currentMonth]}-01`;
+            }
+        }
+
         function handleSlidesScroll() {
             if (window.innerWidth >= 1024) return;
             const container = document.getElementById('slidesContainer');
@@ -283,21 +306,16 @@
         function scrollToSlide(index) {
             const container = document.getElementById('slidesContainer');
             const slide = document.getElementById(`slide${index}`);
-            container.scrollTo({
-                left: slide.offsetLeft - container.offsetLeft,
-                behavior: 'smooth'
-            });
+            container.scrollTo({ left: slide.offsetLeft - container.offsetLeft, behavior: 'smooth' });
         }
 
         function toggleChecklistDropdown() {
             const content = document.getElementById('dropdownContent');
             const arrow = document.getElementById('dropdownArrow');
             if (content.classList.contains('hidden')) {
-                content.classList.remove('hidden');
-                arrow.style.transform = 'rotate(0deg)';
+                content.classList.remove('hidden'); arrow.style.transform = 'rotate(0deg)';
             } else {
-                content.classList.add('hidden');
-                arrow.style.transform = 'rotate(-90deg)';
+                content.classList.add('hidden'); arrow.style.transform = 'rotate(-90deg)';
             }
         }
 
@@ -331,10 +349,7 @@
             let latestGlobalBalance = 0;
             monthOrder.forEach((m, idx) => {
                 let bal = parseInt(localStorage.getItem(`mbanking_balance_${m}`)) || 0;
-                if (bal > 0) {
-                    latestMonthIdx = idx;
-                    latestGlobalBalance = bal;
-                }
+                if (bal > 0) { latestMonthIdx = idx; latestGlobalBalance = bal; }
             });
 
             document.getElementById('tabunganTercapai').innerText = formatRupiah(latestGlobalBalance);
@@ -350,10 +365,7 @@
             let prevRecordedBalance = 0;
             for (let i = selectedIdx - 1; i >= 0; i--) {
                 let prevBal = parseInt(localStorage.getItem(`mbanking_balance_${monthOrder[i]}`)) || 0;
-                if (prevBal > 0) {
-                    prevRecordedBalance = prevBal;
-                    break;
-                }
+                if (prevBal > 0) { prevRecordedBalance = prevBal; break; }
             }
 
             const tabunganBulanIniElement = document.getElementById('tabunganBulanIni');
@@ -427,11 +439,6 @@
             renderExpenses();
         }
 
-        function getTimestamp() {
-            const now = new Date();
-            return now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) + ', ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-        }
-
         function renderIncomes() {
             const currentMonth = getActiveMonth();
             const incomes = getIncomesList(currentMonth);
@@ -457,14 +464,16 @@
             const descInput = document.getElementById('incDesc');
             const amountInput = document.getElementById('incAmount');
             const incomes = getIncomesList(currentMonth);
-            incomes.push({ category: categoryInput.value, desc: descInput.value, amount: parseInt(amountInput.value), time: getTimestamp() });
+            
+            const now = new Date();
+            const timeStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) + ', ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+            incomes.push({ category: categoryInput.value, desc: descInput.value, amount: parseInt(amountInput.value), time: timeStr });
             localStorage.setItem(`inc_${currentMonth}`, JSON.stringify(incomes));
-            descInput.value = '';
-            amountInput.value = '';
+            descInput.value = ''; amountInput.value = '';
             render();
         }
 
-        // FIXED: PENGHAPUSAN AMAN TANPA RE-INJEKSI OTOMATIS
         function deleteIncome(index) {
             const currentMonth = getActiveMonth();
             const incomes = getIncomesList(currentMonth);
@@ -497,50 +506,78 @@
             render();
         }
 
+        // BARU & DIUBAH: MENAMPILKAN DAFTAR TRANSAKSI BELANJA YANG SUDAH DIFILTER PER HARI
         function renderExpenses() {
             const currentMonth = getActiveMonth();
             const expenses = JSON.parse(localStorage.getItem(`exp_${currentMonth}`)) || [];
+            const filterDate = document.getElementById('expenseFilterDate').value; // Membaca tanggal aktif
             const tbody = document.getElementById('expenseTableBody');
             const emptyState = document.getElementById('emptyState');
+            
             tbody.innerHTML = '';
-            let totalSpent = 0;
+            let totalSpentThisMonth = 0;
+            let displayCount = 0;
+
             expenses.forEach((exp, index) => {
-                totalSpent += exp.amount;
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100">
-                        <td class="p-2 text-slate-400 text-[10px] font-mono">${exp.time || '-'}</td>
-                        <td class="p-2"><span class="px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded-sm font-medium text-[9px] border border-slate-200">${exp.category || 'Lainnya'}</span></td>
-                        <td class="p-2 text-slate-700 font-medium truncate max-w-[100px]">${exp.desc}</td>
-                        <td class="p-2 text-right font-bold text-slate-800 font-mono">${formatRupiah(exp.amount)}</td>
-                        <td class="p-2 text-center"><button onclick="deleteExpense(${index})" class="text-rose-600 font-semibold text-[10px] bg-rose-50 px-1.5 py-0.5 rounded cursor-pointer">Hapus</button></td>
-                    </tr>
-                `;
+                totalSpentThisMonth += exp.amount; // Tetap hitung total bulanan untuk bar anggaran umum
+
+                // Saringan Logika: Hanya render baris jika string tanggal COCOK
+                if (exp.date === filterDate) {
+                    displayCount++;
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100">
+                            <td class="p-2 text-slate-400 text-[10px] font-mono font-medium">${exp.time || '-'}</td>
+                            <td class="p-2"><span class="px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded-sm font-medium text-[9px] border border-slate-200">${exp.category || 'Lainnya'}</span></td>
+                            <td class="p-2 text-slate-700 font-medium truncate max-w-[120px]">${exp.desc}</td>
+                            <td class="p-2 text-right font-bold text-slate-800 font-mono">${formatRupiah(exp.amount)}</td>
+                            <td class="p-2 text-center">
+                                <button onclick="deleteExpense(${index})" class="text-rose-600 font-semibold text-[10px] bg-rose-50 px-1.5 py-0.5 rounded cursor-pointer">Hapus</button>
+                            </td>
+                        </tr>
+                    `;
+                }
             });
-            if(expenses.length === 0) emptyState.classList.remove('hidden');
+
+            if(displayCount === 0) emptyState.classList.remove('hidden');
             else emptyState.classList.add('hidden');
 
-            const remaining = BUDGET_LIMIT - totalSpent;
+            // Kalkulasi Bar Anggaran & Saldo Berbasis Total Akumulatif Bulanan
+            const remaining = BUDGET_LIMIT - totalSpentThisMonth;
             const sisaElement = document.getElementById('sisaBelanja');
             sisaElement.innerText = formatRupiah(remaining);
             sisaElement.className = remaining < 0 ? "text-xs font-bold text-rose-600" : "text-xs font-bold text-emerald-600";
 
-            const percent = Math.min((totalSpent / BUDGET_LIMIT) * 100, 100);
+            const percent = Math.min((totalSpentThisMonth / BUDGET_LIMIT) * 100, 100);
             const progressBar = document.getElementById('budgetProgressBar');
             progressBar.style.width = `${percent}%`;
             progressBar.className = percent >= 100 ? "bg-rose-600 h-1.5 rounded-full transition-all" : (percent >= 80 ? "bg-amber-500 h-1.5 rounded-full transition-all" : "bg-emerald-600 h-1.5 rounded-full transition-all");
         }
 
+        // BARU & DIUBAH: MENYIMPAN ATRIBUT TANGGAL YANG TERPILIH PADA KALENDER SECARA OTOMATIS
         function addExpense(e) {
             e.preventDefault();
             const currentMonth = getActiveMonth();
             const categoryInput = document.getElementById('expCategory');
             const descInput = document.getElementById('expDesc');
             const amountInput = document.getElementById('expAmount');
+            const filterDate = document.getElementById('expenseFilterDate').value;
+
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB'; // Simpan jam menit pengisian
+
             const expenses = JSON.parse(localStorage.getItem(`exp_${currentMonth}`)) || [];
-            expenses.push({ category: categoryInput.value, desc: descInput.value, amount: parseInt(amountInput.value), time: getTimestamp() });
+            
+            // Masukkan objek baru dengan pengaman "date" terikat pada kalender terpilih
+            expenses.push({ 
+                category: categoryInput.value, 
+                desc: descInput.value, 
+                amount: parseInt(amountInput.value), 
+                date: filterDate, // Di-tag otomatis ke hari tersebut
+                time: timeStr 
+            });
+            
             localStorage.setItem(`exp_${currentMonth}`, JSON.stringify(expenses));
-            descInput.value = '';
-            amountInput.value = '';
+            descInput.value = ''; amountInput.value = '';
             render();
         }
 
@@ -578,8 +615,16 @@
 
         function closeChartModal() { document.getElementById('chartModal').classList.add('hidden'); }
         function closeChartModalOnOutside(e) { if (e.target.id === 'chartModal') closeChartModal(); }
-        function changeMonth() { render(); }
-        window.onload = function() { render(); };
+        
+        function changeMonth() {
+            syncDatePickerWithMonth(); // Selaraskan tanggal kalender saat bulan atas diubah
+            render();
+        }
+
+        window.onload = function() {
+            syncDatePickerWithMonth(); // Jalankan sinkronisasi awal saat web pertama kali dimuat
+            render();
+        };
     </script>
 </body>
 </html>
