@@ -7,10 +7,10 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
         
-        /* Utility khusus menyembunyikan scrollbar bawaan browser agar slider kartu atas sebersih app native */
+        /* Mengeliminasi scrollbar bawaan browser agar transisi slide terasa seperti aplikasi native mobile */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -41,7 +41,7 @@
 
     <main class="max-w-[1600px] mx-auto px-4 py-4">
         
-        <div class="flex lg:grid lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6 overflow-x-auto pb-2 snap-x snap-mandatory hide-scrollbar">
+        <div class="flex lg:grid lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-5 overflow-x-auto pb-2 snap-x snap-mandatory hide-scrollbar">
             <div class="bg-white p-4 rounded-xl shadow-xs border border-slate-200 shrink-0 w-[calc(50%-8px)] lg:w-full snap-start">
                 <p class="text-[10px] sm:text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Total Pendapatan</p>
                 <h3 id="displayGaji" class="text-sm sm:text-base font-bold text-slate-800 mt-1">Rp 0</h3>
@@ -74,9 +74,15 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:hidden flex bg-slate-200 p-1 rounded-xl mb-4 gap-1 sticky top-[60px] z-40 backdrop-blur-md bg-opacity-90">
+            <button id="tab0" onclick="scrollToSlide(0)" class="flex-1 text-center py-2 text-xs font-bold rounded-lg bg-[#2d6a4f] text-white shadow-xs transition-all duration-200">📋 Tagihan</button>
+            <button id="tab1" onclick="scrollToSlide(1)" class="flex-1 text-center py-2 text-xs font-bold rounded-lg text-slate-600 transition-all duration-200">💰 Masuk</button>
+            <button id="tab2" onclick="scrollToSlide(2)" class="flex-1 text-center py-2 text-xs font-bold rounded-lg text-slate-600 transition-all duration-200">🛍️ Belanja</button>
+        </div>
+
+        <div id="slidesContainer" onscroll="handleSlidesScroll()" class="flex lg:grid lg:grid-cols-3 gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth w-full hide-scrollbar pb-6 lg:pb-0">
             
-            <div class="space-y-4">
+            <div id="slide0" class="w-full lg:w-full shrink-0 snap-start space-y-4">
                 <div class="bg-white rounded-xl shadow-xs border border-slate-200 overflow-hidden">
                     <button onclick="toggleChecklistDropdown()" class="w-full flex justify-between items-center p-4 bg-slate-50 border-b border-slate-100 cursor-pointer hover:bg-slate-100/70 transition-colors">
                         <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2">
@@ -113,7 +119,7 @@
                 </div>
             </div>
 
-            <div class="bg-white p-5 rounded-xl shadow-xs border border-slate-200">
+            <div id="slide1" class="w-full lg:w-full shrink-0 snap-start bg-white p-5 rounded-xl shadow-xs border border-slate-200">
                 <div class="border-b border-slate-100 pb-3 mb-4">
                     <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2">
                         <span>💰</span> Log Aliran Uang Masuk
@@ -157,7 +163,7 @@
                 </div>
             </div>
 
-            <div class="bg-white p-5 rounded-xl shadow-xs border border-slate-200">
+            <div id="slide2" class="w-full lg:w-full shrink-0 snap-start bg-white p-5 rounded-xl shadow-xs border border-slate-200">
                 <div class="border-b border-slate-100 pb-3 mb-4 flex justify-between items-center gap-2">
                     <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2">
                         <span>🛍️</span> Log Belanja Harian
@@ -240,7 +246,7 @@
             Agustus: { gopay: 165867, spay: 27095, tiktok: 178698, trvlk: 0, inddna: 129000, rtn438: 439000 },
             September: { gopay: 0, spay: 27095, tiktok: 118116, trvlk: 0, inddna: 129000, rtn438: 439000 },
             Oktober: { gopay: 0, spay: 27097, tiktok: 52511, trvlk: 0, inddna: 129000, rtn438: 0 },
-            November: { gopay: 0, smap: 0, tiktok: 0, trvlk: 0, inddna: 0, rtn438: 0 },
+            November: { gopay: 0, spay: 0, tiktok: 0, trvlk: 0, inddna: 0, rtn438: 0 },
             Desember: { gopay: 0, spay: 0, tiktok: 0, trvlk: 0, inddna: 0, rtn438: 0 }
         };
 
@@ -252,6 +258,35 @@
 
         function getActiveMonth() {
             return document.getElementById('monthSelector').value;
+        }
+
+        // UPDATED: Sinkronisasi Tab Navigasi Aktif Mengikuti 100% Lebar Screen Slide HP
+        function handleSlidesScroll() {
+            if (window.innerWidth >= 1024) return;
+            const container = document.getElementById('slidesContainer');
+            const scrollLeft = container.scrollLeft;
+            const slideWidth = container.clientWidth;
+            const activeIndex = Math.round(scrollLeft / slideWidth);
+            
+            for (let i = 0; i <= 2; i++) {
+                const tab = document.getElementById(`tab${i}`);
+                if (tab) {
+                    if (i === activeIndex) {
+                        tab.className = "flex-1 text-center py-2 text-xs font-bold rounded-lg bg-[#2d6a4f] text-white shadow-xs transition-all duration-200";
+                    } else {
+                        tab.className = "flex-1 text-center py-2 text-xs font-bold rounded-lg text-slate-600 transition-all duration-200";
+                    }
+                }
+            }
+        }
+
+        function scrollToSlide(index) {
+            const container = document.getElementById('slidesContainer');
+            const slide = document.getElementById(`slide${index}`);
+            container.scrollTo({
+                left: slide.offsetLeft - container.offsetLeft,
+                behavior: 'smooth'
+            });
         }
 
         function toggleChecklistDropdown() {
@@ -357,7 +392,6 @@
                 balanceBadge.classList.add('hidden');
             }
 
-            // FIXED: DAFTAR CHECKLIST SEKARANG MEMUAT KOST & ASURANSI YANG BERAKAR DARI REK 1
             const checklistContainer = document.getElementById('checklistContainer');
             checklistContainer.innerHTML = '';
             const tagihanList = [
@@ -430,6 +464,7 @@
             render();
         }
 
+        // FIXED: PENGHAPUSAN AMAN TANPA RE-INJEKSI OTOMATIS
         function deleteIncome(index) {
             const currentMonth = getActiveMonth();
             const incomes = getIncomesList(currentMonth);
