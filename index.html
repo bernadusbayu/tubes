@@ -35,30 +35,35 @@
     </header>
 
     <main class="max-w-7xl mx-auto px-4 py-6">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
             <div class="bg-white p-4 rounded-xl shadow-xs border border-slate-200">
                 <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Gaji Masuk</p>
-                <h3 class="text-lg font-bold text-slate-800 mt-1">Rp 7.590.000</h3>
+                <h3 class="text-base font-bold text-slate-800 mt-1">Rp 7.590.000</h3>
                 <span class="text-[10px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-medium mt-2 inline-block">Masuk Rek 1</span>
             </div>
             <div class="bg-yellow-50/60 p-4 rounded-xl shadow-xs border border-yellow-200">
                 <p class="text-xs font-semibold text-yellow-700 uppercase tracking-wider">Target Awal Rek 1</p>
-                <h3 id="saldoRek1" class="text-lg font-bold text-yellow-800 mt-1">Rp 0</h3>
+                <h3 id="saldoRek1" class="text-base font-bold text-yellow-800 mt-1">Rp 0</h3>
                 <p class="text-[10px] text-yellow-600 mt-1">Kost + Asrn + Simpanan</p>
             </div>
             <div class="bg-orange-50/60 p-4 rounded-xl shadow-xs border border-orange-200">
                 <p class="text-xs font-semibold text-orange-700 uppercase tracking-wider">Target Pindahan Rek 2</p>
-                <h3 id="saldoRek2" class="text-lg font-bold text-orange-800 mt-1">Rp 0</h3>
-                <p class="text-[10px] text-orange-600 mt-1">Pindahkan Alokasi Operasional</p>
+                <h3 id="saldoRek2" class="text-base font-bold text-orange-800 mt-1">Rp 0</h3>
+                <p class="text-[10px] text-orange-600 mt-1">Alokasi Operasional</p>
+            </div>
+            <div class="bg-indigo-50 p-4 rounded-xl shadow-xs border border-indigo-200">
+                <p class="text-xs font-semibold text-indigo-700 uppercase tracking-wider">Tabungan Bulan Ini</p>
+                <h3 id="tabunganBulanIni" class="text-base font-bold text-indigo-800 mt-1">Rp 0</h3>
+                <p id="subTabunganBulanIni" class="text-[10px] text-indigo-500 mt-1">Murni bersih bulan terpilih</p>
             </div>
             <div class="bg-blue-600 p-4 rounded-xl shadow-md border border-blue-700 text-white">
-                <p class="text-xs font-semibold uppercase tracking-wider text-blue-100">Tabungan Tercapai (Riil)</p>
-                <h3 id="tabunganTercapai" class="text-xl font-bold mt-1">Rp 0</h3>
-                <p class="text-[10px] text-blue-200 mt-1">Berdasarkan Angka Riil M-Banking Anda</p>
+                <p class="text-xs font-semibold uppercase tracking-wider text-blue-100">Total Uang Ditabung</p>
+                <h3 id="tabunganTercapai" class="text-base font-bold mt-1">Rp 0</h3>
+                <p class="text-[10px] text-blue-200 mt-1">Saldo Terakhir di M-Banking</p>
             </div>
             <div class="bg-emerald-50 p-4 rounded-xl shadow-xs border border-emerald-200">
                 <p class="text-xs font-semibold text-emerald-700 uppercase tracking-wider">Proyeksi Akhir Des</p>
-                <h3 id="proyeksiAkhir" class="text-lg font-bold text-emerald-800 mt-1">Rp 20.747.034</h3>
+                <h3 id="proyeksiAkhir" class="text-base font-bold text-emerald-800 mt-1">Rp 20.747.034</h3>
                 <span class="text-[10px] text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full font-medium mt-1 inline-block">Kalkulasi Otomatis</span>
             </div>
         </div>
@@ -84,25 +89,24 @@
 
                 <div class="bg-white p-5 rounded-xl shadow-xs border border-slate-200 border-l-4 border-l-blue-600">
                     <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2 mb-1">
-                        <span>⚙️</span> Sinkronisasi Saldo M-Banking
+                        <span>⚙6;</span> Sinkronisasi M-Banking <span id="inputMonthLabel" class="text-blue-600 font-bold"></span>
                     </h2>
-                    <p class="text-[10px] text-slate-400 mb-4">Buka m-banking Anda di akhir bulan gajian, masukkan jumlah total saldo tabungan ter-update Anda di bawah ini tanpa perlu repot menghitung sisa sisa uang.</p>
+                    <p class="text-[10px] text-slate-400 mb-4">Setiap akhir bulan sebelum gajihan baru masuk, ketikkan angka total saldo yang tertera di m-banking Anda saat itu.</p>
                     
                     <div class="space-y-3">
                         <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Input Saldo Akhir Rekening</label>
                             <div class="flex gap-2">
-                                <input type="number" id="globalBalanceInput" placeholder="Contoh: 3500000" class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-2 outline-none focus:border-blue-600">
+                                <input type="number" id="globalBalanceInput" placeholder="Ketik saldo m-banking riil..." class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-2 outline-none focus:border-blue-600">
                                 <button onclick="updateGlobalBalance()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2 rounded transition-colors whitespace-nowrap cursor-pointer">
-                                    Update Saldo
+                                    Simpan Saldo
                                 </button>
                             </div>
                         </div>
                     </div>
 
                     <div id="balanceHistoryBadge" class="mt-3.5 p-2.5 bg-blue-50 rounded border border-blue-100 flex justify-between items-center hidden">
-                        <span class="text-[11px] text-slate-600">Saldo Riil Tercatat: <strong id="loggedBalanceText" class="text-blue-700 font-bold">Rp 0</strong></span>
-                        <button onclick="resetGlobalBalance()" class="text-rose-600 hover:text-rose-800 font-bold text-[10px] bg-white px-2 py-0.5 border border-rose-200 rounded cursor-pointer">Reset</button>
+                        <span class="text-[11px] text-slate-600">Saldo Riil Bulan Ini: <strong id="loggedBalanceText" class="text-blue-700 font-bold">Rp 0</strong></span>
+                        <button onclick="resetGlobalBalance()" class="text-rose-600 hover:text-rose-800 font-bold text-[10px] bg-white px-2 py-0.5 border border-rose-200 rounded cursor-pointer">Hapus</button>
                     </div>
                 </div>
             </div>
@@ -168,7 +172,7 @@
             Agustus: { gopay: 165867, spay: 27095, tiktok: 178698, trvlk: 0, inddna: 129000, rtn438: 439000, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 2730340, rek1: 4850340, rek2: 2739660 },
             September: { gopay: 0, spay: 27095, tiktok: 118116, trvlk: 0, inddna: 129000, rtn438: 439000, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 2956789, rek1: 5076789, rek2: 2513211 },
             Oktober: { gopay: 0, spay: 27097, tiktok: 52511, trvlk: 0, inddna: 129000, rtn438: 0, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 3461392, rek1: 5581392, rek2: 2008608 },
-            November: { gopay: 0, spay: 0, tiktok: 0, trvlk: 0, font: 9, inddna: 0, rtn438: 0, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 3670000, rek1: 5790000, rek2: 1800000 },
+            November: { gopay: 0, spay: 0, tiktok: 0, trvlk: 0, inddna: 0, rtn438: 0, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 3670000, rek1: 5790000, rek2: 1800000 },
             Desember: { gopay: 0, spay: 0, tiktok: 0, trvlk: 0, inddna: 0, rtn438: 0, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 3670000, rek1: 5790000, rek2: 1800000 }
         };
 
@@ -180,23 +184,58 @@
             return document.getElementById('monthSelector').value;
         }
 
-        // HITUNG METRIK TABUNGAN DAN PROYEKSI AKHIR DESEMBER SECARA DINAMIS
+        // PERHITUNGAN KALKULASI UTAMA (M-BANKING ENGINE)
         function calculateMetrics() {
-            const currentMonth = getActiveMonth();
-            const currentIdx = monthOrder.indexOf(currentMonth);
+            const selectedMonth = getActiveMonth();
+            const selectedIdx = monthOrder.indexOf(selectedMonth);
 
-            // Ambil Nilai Saldo Riil dari LocalStorage
-            const realBalance = parseInt(localStorage.getItem('mbanking_real_balance')) || 0;
+            // 1. Cari Saldo Terakhir yang Pernah Di-input (Global Terkini)
+            let latestMonthIdx = -1;
+            let latestGlobalBalance = 0;
+            monthOrder.forEach((m, idx) => {
+                let bal = parseInt(localStorage.getItem(`mbanking_balance_${m}`)) || 0;
+                if (bal > 0) {
+                    latestMonthIdx = idx;
+                    latestGlobalBalance = bal;
+                }
+            });
 
-            // Hitung sisa target teori dari bulan-bulan berikutnya (Bulan setelah bulan terpilih)
+            // Kartu Biru menampilkan total tabungan riil terbaru Anda saat ini (Global & Persisten)
+            document.getElementById('tabunganTercapai').innerText = formatRupiah(latestGlobalBalance);
+
+            // 2. Hitung Proyeksi Akhir Desember Berdasarkan Saldo Riil Terkini
             let remainingTarget = 0;
-            for (let i = currentIdx + 1; i < monthOrder.length; i++) {
+            for (let i = latestMonthIdx + 1; i < monthOrder.length; i++) {
                 remainingTarget += financialData[monthOrder[i]].simpan;
             }
+            document.getElementById('proyeksiAkhir').innerText = formatRupiah(latestGlobalBalance + remainingTarget);
 
-            // Tampilkan Ke Kartu Atas
-            document.getElementById('tabunganTercapai').innerText = formatRupiah(realBalance);
-            document.getElementById('proyeksiAkhir').innerText = formatRupiah(realBalance + remainingTarget);
+            // 3. BARU: Hitung Tabungan Khusus Bulan Ini (Sesuai Bulan Terpilih di Dropdown)
+            const currentMonthBalance = parseInt(localStorage.getItem(`mbanking_balance_${selectedMonth}`)) || 0;
+            
+            // Cari saldo dari bulan tercatat sebelumnya
+            let prevRecordedBalance = 0;
+            for (let i = selectedIdx - 1; i >= 0; i--) {
+                let prevBal = parseInt(localStorage.getItem(`mbanking_balance_${monthOrder[i]}`)) || 0;
+                if (prevBal > 0) {
+                    prevRecordedBalance = prevBal;
+                    break;
+                }
+            }
+
+            const tabunganBulanIniElement = document.getElementById('tabunganBulanIni');
+            const subTextElement = document.getElementById('subTabunganBulanIni');
+
+            if (currentMonthBalance > 0) {
+                const growth = currentMonthBalance - prevRecordedBalance;
+                tabunganBulanIniElement.innerText = formatRupiah(growth);
+                subTextElement.innerText = `Pertumbuhan dari bulan lalu`;
+                tabunganBulanIniElement.className = "text-base font-bold text-indigo-800 mt-1";
+            } else {
+                tabunganBulanIniElement.innerText = "Belum Di-update";
+                subTextElement.innerText = "Selesaikan pencatatan akhir bulan";
+                tabunganBulanIniElement.className = "text-xs font-semibold text-slate-400 mt-1.5";
+            }
         }
 
         // ENGINE VISUALISASI UTAMA
@@ -207,15 +246,16 @@
             document.getElementById('saldoRek1').innerText = formatRupiah(monthData.rek1);
             document.getElementById('saldoRek2').innerText = formatRupiah(monthData.rek2);
             document.getElementById('instruksiPindahan').innerText = formatRupiah(monthData.rek2);
+            document.getElementById('inputMonthLabel').innerText = `(${currentMonth})`;
 
-            // Jalankan Kalkulator Metrik
+            // Jalankan Kalkulator Matematika Saldo Riil
             calculateMetrics();
 
-            // Render Badge Status Log Saldo Terakhir
-            const realBalance = parseInt(localStorage.getItem('mbanking_real_balance')) || 0;
+            // Render Badge Status Log Saldo Bulan Terpilih
+            const currentMonthBalance = parseInt(localStorage.getItem(`mbanking_balance_${currentMonth}`)) || 0;
             const historyBadge = document.getElementById('balanceHistoryBadge');
-            if (realBalance > 0) {
-                document.getElementById('loggedBalanceText').innerText = formatRupiah(realBalance);
+            if (currentMonthBalance > 0) {
+                document.getElementById('loggedBalanceText').innerText = formatRupiah(currentMonthBalance);
                 historyBadge.classList.remove('hidden');
             } else {
                 historyBadge.classList.add('hidden');
@@ -257,20 +297,22 @@
             renderExpenses();
         }
 
-        // INTERAKSI: UPDATE SALDO RIIL DARI M-BANKING
+        // INTERAKSI: UPDATE SALDO RIIL PER BULAN
         function updateGlobalBalance() {
+            const currentMonth = getActiveMonth();
             const input = document.getElementById('globalBalanceInput');
             const val = parseInt(input.value) || 0;
             
             if (val <= 0) return;
-            localStorage.setItem('mbanking_real_balance', val);
+            localStorage.setItem(`mbanking_balance_${currentMonth}`, val);
             input.value = '';
             render();
         }
 
-        // INTERAKSI: RESET DATA SALDO
+        // INTERAKSI: RESET DATA SALDO BULAN TERPILIH
         function resetGlobalBalance() {
-            localStorage.removeItem('mbanking_real_balance');
+            const currentMonth = getActiveMonth();
+            localStorage.removeItem(`mbanking_balance_${currentMonth}`);
             render();
         }
 
