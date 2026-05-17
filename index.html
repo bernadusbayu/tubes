@@ -38,9 +38,9 @@
     <main class="max-w-7xl mx-auto px-4 py-6">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
             <div class="bg-white p-4 rounded-xl shadow-xs border border-slate-200">
-                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Gaji Masuk</p>
-                <h3 class="text-base font-bold text-slate-800 mt-1">Rp 7.590.000</h3>
-                <span class="text-[10px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-medium mt-2 inline-block">Masuk Rek 1</span>
+                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Gaji Bulan Ini</p>
+                <h3 id="displayGaji" class="text-base font-bold text-slate-800 mt-1">Rp 7.590.000</h3>
+                <span class="text-[10px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-medium mt-2 inline-block">Dinamis Per Bulan</span>
             </div>
             <div class="bg-yellow-50/60 p-4 rounded-xl shadow-xs border border-yellow-200">
                 <p class="text-xs font-semibold text-yellow-700 uppercase tracking-wider">Target Awal Rek 1</p>
@@ -90,12 +90,23 @@
 
                 <div class="bg-white p-5 rounded-xl shadow-xs border border-slate-200 border-l-4 border-l-blue-600">
                     <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2 mb-1">
-                        <span>⚙️</span> Sinkronisasi M-Banking <span id="inputMonthLabel" class="text-blue-600 font-bold"></span>
+                        <span>⚙️</span> Penyesuaian Dana <span id="inputMonthLabel" class="text-blue-600 font-bold"></span>
                     </h2>
-                    <p class="text-[10px] text-slate-400 mb-4">Setiap akhir bulan sebelum gajihan baru masuk, ketikkan angka total saldo yang tertera di m-banking Anda saat itu.</p>
+                    <p class="text-[10px] text-slate-400 mb-4">Kelola nominal pendapatan tak terduga dan sinkronisasikan saldo akhir m-banking Anda di sini.</p>
                     
-                    <div class="space-y-3">
+                    <div class="space-y-3.5">
                         <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">1. Gaji / Pendapatan Tambahan (Rp)</label>
+                            <div class="flex gap-2">
+                                <input type="number" id="gajiInput" placeholder="Contoh: 8500000" class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-2 outline-none focus:border-blue-600">
+                                <button onclick="updateGaji()" class="bg-[#2d6a4f] hover:bg-[#1e5128] text-white font-bold text-xs px-3 py-2 rounded transition-colors whitespace-nowrap cursor-pointer">
+                                    Set Gaji
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">2. Saldo Akhir Rekening m-Banking (Rp)</label>
                             <div class="flex gap-2">
                                 <input type="number" id="globalBalanceInput" placeholder="Ketik saldo m-banking riil..." class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-2 outline-none focus:border-blue-600">
                                 <button onclick="updateGlobalBalance()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2 rounded transition-colors whitespace-nowrap cursor-pointer">
@@ -105,9 +116,15 @@
                         </div>
                     </div>
 
-                    <div id="balanceHistoryBadge" class="mt-3.5 p-2.5 bg-blue-50 rounded border border-blue-100 flex justify-between items-center hidden">
-                        <span class="text-[11px] text-slate-600">Saldo Riil Bulan Ini: <strong id="loggedBalanceText" class="text-blue-700 font-bold">Rp 0</strong></span>
-                        <button onclick="resetGlobalBalance()" class="text-rose-600 hover:text-rose-800 font-bold text-[10px] bg-white px-2 py-0.5 border border-rose-200 rounded cursor-pointer">Hapus</button>
+                    <div class="mt-4 space-y-2">
+                        <div id="gajiHistoryBadge" class="p-2 bg-emerald-50 rounded border border-emerald-100 flex justify-between items-center hidden">
+                            <span class="text-[11px] text-slate-600">Gaji Di-update: <strong id="loggedGajiText" class="text-emerald-700 font-bold">Rp 0</strong></span>
+                            <button onclick="resetGaji()" class="text-rose-600 hover:text-rose-800 font-bold text-[10px] bg-white px-2 py-0.5 border border-rose-200 rounded cursor-pointer">Reset</button>
+                        </div>
+                        <div id="balanceHistoryBadge" class="p-2 bg-blue-50 rounded border border-blue-100 flex justify-between items-center hidden">
+                            <span class="text-[11px] text-slate-600">Saldo Riil Terlog: <strong id="loggedBalanceText" class="text-blue-700 font-bold">Rp 0</strong></span>
+                            <button onclick="resetGlobalBalance()" class="text-rose-600 hover:text-rose-800 font-bold text-[10px] bg-white px-2 py-0.5 border border-rose-200 rounded cursor-pointer">Hapus</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -183,19 +200,16 @@
 
     <div id="chartModal" onclick="closeChartModalOnOutside(event)" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden transition-all duration-200">
         <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 relative border border-slate-100">
-            <button onclick="closeChartModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-xl font-semibold cursor-pointer transition-colors">&times;</button>
-            
+            <button onclick="closeChartModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-xl font-semibold cursor-pointer">&times;</button>
             <div class="border-b border-slate-100 pb-2 mb-4">
                 <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
                     📊 Proporsi Belanja Bulanan <span id="chartMonthLabel" class="text-indigo-600"></span>
                 </h3>
                 <p class="text-[11px] text-slate-400">Persentase pengeluaran riil berdasarkan pengelompokan kategori belanja.</p>
             </div>
-            
             <div class="w-full max-h-[280px] flex justify-center items-center my-4">
                 <canvas id="categoryChart"></canvas>
             </div>
-            
             <div id="chartEmptyState" class="text-center py-16 text-slate-400 hidden font-medium">
                 ❌ Belum ada item belanja harian tercatat di bulan ini untuk membuat grafik.
             </div>
@@ -205,19 +219,26 @@
     <script>
         const monthOrder = ["Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         
-        const financialData = {
-            Mei: { gopay: 1406669, spay: 219278, tiktok: 465034, trvlk: 266000, inddna: 129000, rtn438: 439000, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 745019, rek1: 2865019, rek2: 4724981 },
-            Juni: { gopay: 1305952, spay: 81702, tiktok: 305041, trvlk: 0, inddna: 129000, rtn438: 439000, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 1409305, rek1: 3529305, rek2: 4060695 },
-            Juli: { gopay: 725641, spay: 81700, tiktok: 190470, trvlk: 0, inddna: 129000, rtn438: 439000, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 2104189, rek1: 4224189, rek2: 3365811 },
-            Agustus: { gopay: 165867, spay: 27095, tiktok: 178698, trvlk: 0, inddna: 129000, rtn438: 439000, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 2730340, rek1: 4850340, rek2: 2739660 },
-            September: { gopay: 0, spay: 27095, tiktok: 118116, trvlk: 0, inddna: 129000, rtn438: 439000, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 2956789, rek1: 5076789, rek2: 2513211 },
-            Oktober: { gopay: 0, spay: 27097, tiktok: 52511, trvlk: 0, inddna: 129000, rtn438: 0, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 3461392, rek1: 5581392, rek2: 2008608 },
-            November: { gopay: 0, spay: 0, tiktok: 0, trvlk: 0, inddna: 0, rtn438: 0, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 3670000, rek1: 5790000, rek2: 1800000 },
-            Desember: { gopay: 0, spay: 0, tiktok: 0, trvlk: 0, inddna: 0, rtn438: 0, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 3670000, rek1: 5790000, rek2: 1800000 }
+        // Konstanta Finansial Tetap (Baseline)
+        const BASE_GAJI = 7590000;
+        const BUDGET_LIMIT = 1500000;
+        const kost_val = 1850000;
+        const asrn_val = 270000;
+        const lstk_val = 300000;
+
+        // Data Mentah Cicilan Riil Hasil Sinkronisasi Dokumen Laporan
+        const rawDebts = {
+            Mei: { gopay: 1406669, spay: 219278, tiktok: 465034, trvlk: 266000, inddna: 129000, rtn438: 439000 },
+            Juni: { gopay: 1305952, spay: 81702, tiktok: 305041, trvlk: 0, inddna: 129000, rtn438: 439000 },
+            Juli: { gopay: 725641, spay: 81700, tiktok: 190470, trvlk: 0, inddna: 129000, rtn438: 439000 },
+            Agustus: { gopay: 165867, spay: 27095, tiktok: 178698, trvlk: 0, inddna: 129000, rtn438: 439000 },
+            September: { gopay: 0, spay: 27095, tiktok: 118116, trvlk: 0, inddna: 129000, rtn438: 439000 },
+            Oktober: { gopay: 0, spay: 27097, tiktok: 52511, trvlk: 0, inddna: 129000, rtn438: 0 },
+            November: { gopay: 0, spay: 0, tiktok: 0, trvlk: 0, inddna: 0, rtn438: 0 },
+            Desember: { gopay: 0, spay: 0, tiktok: 0, trvlk: 0, inddna: 0, rtn438: 0 }
         };
 
-        const BUDGET_LIMIT = 1500000;
-        let myChartInstance = null; // Menyimpan instansi grafik aktif agar bisa dihancurkan/dibuat ulang
+        let myChartInstance = null;
 
         function formatRupiah(number) {
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
@@ -225,6 +246,22 @@
 
         function getActiveMonth() {
             return document.getElementById('monthSelector').value;
+        }
+
+        // ENGINE KALKULASI UTAMA: MEMBACA VARIABEL BERANTAI DINAMIS 100%
+        function getCalculatedData(m) {
+            const debts = rawDebts[m];
+            // Ambil gaji dari LocalStorage, jika kosong gunakan default BASE_GAJI
+            const gaji = parseInt(localStorage.getItem(`gaji_${m}`)) || BASE_GAJI;
+            
+            const tagihan_var = debts.gopay + debts.spay + debts.tiktok + debts.trvlk + debts.inddna + debts.rtn438;
+            const tetap = kost_val + asrn_val + lstk_val;
+            
+            const rek2 = tagihan_var + lstk_val + BUDGET_LIMIT;
+            const simpan = gaji - (tagihan_var + tetap + BUDGET_LIMIT);
+            const rek1 = simpan + kost_val + asrn_val;
+            
+            return { gaji, gopay: debts.gopay, spay: debts.spay, tiktok: debts.tiktok, trvlk: debts.trvlk, inddna: debts.inddna, rtn438: debts.rtn438, simpan, rek1, rek2 };
         }
 
         function calculateMetrics() {
@@ -243,9 +280,11 @@
 
             document.getElementById('tabunganTercapai').innerText = formatRupiah(latestGlobalBalance);
 
+            // Hitung Proyeksi Akhir menggunakan simpanan dinamis bulan depan
             let remainingTarget = 0;
             for (let i = latestMonthIdx + 1; i < monthOrder.length; i++) {
-                remainingTarget += financialData[monthOrder[i]].simpan;
+                const futureData = getCalculatedData(monthOrder[i]);
+                remainingTarget += futureData.simpan;
             }
             document.getElementById('proyeksiAkhir').innerText = formatRupiah(latestGlobalBalance + remainingTarget);
 
@@ -277,8 +316,10 @@
 
         function render() {
             const currentMonth = getActiveMonth();
-            const monthData = financialData[currentMonth];
+            const monthData = getCalculatedData(currentMonth); // Ambil hasil perhitungan dinamis
 
+            // Tempel data ke elemen visual
+            document.getElementById('displayGaji').innerText = formatRupiah(monthData.gaji);
             document.getElementById('saldoRek1').innerText = formatRupiah(monthData.rek1);
             document.getElementById('saldoRek2').innerText = formatRupiah(monthData.rek2);
             document.getElementById('instruksiPindahan').innerText = formatRupiah(monthData.rek2);
@@ -286,15 +327,27 @@
 
             calculateMetrics();
 
-            const currentMonthBalance = parseInt(localStorage.getItem(`mbanking_balance_${currentMonth}`)) || 0;
-            const historyBadge = document.getElementById('balanceHistoryBadge');
-            if (currentMonthBalance > 0) {
-                document.getElementById('loggedBalanceText').innerText = formatRupiah(currentMonthBalance);
-                historyBadge.classList.remove('hidden');
+            // Render Badge Status Gaji Disesuaikan
+            const customGaji = localStorage.getItem(`gaji_${currentMonth}`);
+            const gajiBadge = document.getElementById('gajiHistoryBadge');
+            if (customGaji) {
+                document.getElementById('loggedGajiText').innerText = formatRupiah(parseInt(customGaji));
+                gajiBadge.classList.remove('hidden');
             } else {
-                historyBadge.classList.add('hidden');
+                gajiBadge.classList.add('hidden');
             }
 
+            // Render Badge Status Log Saldo m-Banking
+            const currentMonthBalance = parseInt(localStorage.getItem(`mbanking_balance_${currentMonth}`)) || 0;
+            const balanceBadge = document.getElementById('balanceHistoryBadge');
+            if (currentMonthBalance > 0) {
+                document.getElementById('loggedBalanceText').innerText = formatRupiah(currentMonthBalance);
+                balanceBadge.classList.remove('hidden');
+            } else {
+                balanceBadge.classList.add('hidden');
+            }
+
+            // Checklist Tagihan Generator
             const checklistContainer = document.getElementById('checklistContainer');
             checklistContainer.innerHTML = '';
             
@@ -330,6 +383,25 @@
             renderExpenses();
         }
 
+        // INTERAKSI: UPDATE & RESET GAJI BULANAN
+        function updateGaji() {
+            const currentMonth = getActiveMonth();
+            const input = document.getElementById('gajiInput');
+            const val = parseInt(input.value) || 0;
+            
+            if (val <= 0) return;
+            localStorage.setItem(`gaji_${currentMonth}`, val);
+            input.value = '';
+            render();
+        }
+
+        function resetGaji() {
+            const currentMonth = getActiveMonth();
+            localStorage.removeItem(`gaji_${currentMonth}`);
+            render();
+        }
+
+        // INTERAKSI: SINKRONISASI SALDO M-BANKING
         function updateGlobalBalance() {
             const currentMonth = getActiveMonth();
             const input = document.getElementById('globalBalanceInput');
@@ -340,10 +412,6 @@
             input.value = '';
             render();
         }
-
-        document.getElementById('globalBalanceInput')?.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') updateGlobalBalance();
-        });
 
         function resetGlobalBalance() {
             const currentMonth = getActiveMonth();
@@ -425,12 +493,7 @@
             const formattedTime = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) + ', ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
             const expenses = JSON.parse(localStorage.getItem(`exp_${currentMonth}`)) || [];
-            expenses.push({ 
-                category: categoryInput.value,
-                desc: descInput.value, 
-                amount: parseInt(amountInput.value),
-                time: formattedTime
-            });
+            expenses.push({ category: categoryInput.value, desc: descInput.value, amount: parseInt(amountInput.value), time: formattedTime });
             
             localStorage.setItem(`exp_${currentMonth}`, JSON.stringify(expenses));
             
@@ -447,11 +510,9 @@
             render();
         }
 
-        // BARU: KONTROLLER JENDELA POP-UP DIAGRAM LINGKARAN
         function openChartModal() {
             const currentMonth = getActiveMonth();
             document.getElementById('chartMonthLabel').innerText = `(${currentMonth})`;
-            
             const modal = document.getElementById('chartModal');
             modal.classList.remove('hidden');
             
@@ -459,7 +520,6 @@
             const canvas = document.getElementById('categoryChart');
             const emptyState = document.getElementById('chartEmptyState');
             
-            // Jaga-jaga jika belum ada transaksi belanja, sembunyikan kanvas grafik
             if (expenses.length === 0) {
                 canvas.classList.add('hidden');
                 emptyState.classList.remove('hidden');
@@ -470,45 +530,32 @@
             canvas.classList.remove('hidden');
             emptyState.classList.add('hidden');
             
-            // Mengelompokkan nominal pengeluaran riil berdasarkan tipe kategori
             const summary = { "Makan/Minum": 0, "Jajan/Kopi": 0, "Transportasi": 0, "Kebutuhan Kost": 0, "Transfer/Utang": 0, "Lainnya": 0 };
             expenses.forEach(exp => {
                 const cat = exp.category || "Lainnya";
-                if (summary[cat] !== undefined) { summary[cat] += exp.amount; } 
-                else { summary["Lainnya"] += exp.amount; }
+                if (summary[cat] !== undefined) summary[cat] += exp.amount;
+                else summary["Lainnya"] += exp.amount;
             });
             
-            // Filter kategori yang memiliki nominal belanja (> 0) agar grafik rapi
             const labels = Object.keys(summary).filter(key => summary[key] > 0);
             const dataValues = labels.map(key => summary[key]);
-            
-            // Setup palet warna estetik untuk diagram
             const colorMap = { "Makan/Minum": "#f87171", "Jajan/Kopi": "#fb923c", "Transportasi": "#60a5fa", "Kebutuhan Kost": "#c084fc", "Transfer/Utang": "#f43f5e", "Lainnya": "#94a3b8" };
             const colors = labels.map(key => colorMap[key] || "#94a3b8");
             
-            // Bersihkan instansi grafik lama jika ada sebelum menggambar ulang
-            if (myChartInstance) { myChartInstance.destroy(); }
+            if (myChartInstance) myChartInstance.destroy();
             
             const ctx = canvas.getContext('2d');
             myChartInstance = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
                     labels: labels,
-                    datasets: [{
-                        data: dataValues,
-                        backgroundColor: colors,
-                        borderWidth: 2,
-                        borderColor: '#ffffff'
-                    }]
+                    datasets: [{ data: dataValues, backgroundColor: colors, borderWidth: 2, borderColor: '#ffffff' }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: { boxWidth: 10, font: { size: 10, family: 'Inter' }, padding: 8 }
-                        },
+                        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10, family: 'Inter' }, padding: 8 } },
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
@@ -528,7 +575,6 @@
             document.getElementById('chartModal').classList.add('hidden');
         }
 
-        // Menutup jendela pop-up jika pengguna mengklik area luar kotak grafik
         function closeChartModalOnOutside(e) {
             if (e.target.id === 'chartModal') closeChartModal();
         }
