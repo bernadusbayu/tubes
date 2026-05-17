@@ -6,7 +6,6 @@
     <title>Dashboard Keuangan Mandiri 2026</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
@@ -15,7 +14,6 @@
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* JALUR UTAMA: Memaksa Seluruh Komponen Web Mengikuti Tombol Sakelar Ketuk */
         .dark body { background-color: #0f172a !important; color: #f8fafc !important; }
         .dark header { background-color: #14371b !important; }
         .dark .bg-white { background-color: #1e293b !important; border-color: #334155 !important; }
@@ -25,7 +23,6 @@
         .dark .text-slate-600 { color: #94a3b8 !important; }
         .dark .text-slate-400 { color: #64748b !important; }
         
-        /* Penyelaras Komponen Input, Dropdown & Kontroler Tab */
         .dark .bg-slate-50 { background-color: #1e293b !important; }
         .dark .bg-slate-100 { background-color: #334155 !important; color: #f8fafc !important; }
         .dark .bg-slate-200 { background-color: #1e293b !important; }
@@ -34,7 +31,6 @@
         .dark .divide-slate-100 > * { border-color: #334155 !important; }
         .dark #dropdownContent { background-color: #1e293b !important; }
 
-        /* Adaptasi Eksklusif Kartu Utama Warna-Warni */
         .dark .bg-yellow-50\/60 { background-color: rgba(253, 224, 71, 0.04) !important; border-color: rgba(234, 179, 8, 0.3) !important; }
         .dark .text-yellow-700, .dark .text-yellow-800, .dark #saldoRek1 { color: #fef08a !important; }
         .dark .bg-orange-50\/60 { background-color: rgba(249, 115, 22, 0.04) !important; border-color: rgba(234, 88, 12, 0.3) !important; }
@@ -214,9 +210,16 @@
                             <span id="sisaBelanja" class="text-xs font-bold text-emerald-600">Rp 1.500.000</span>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2 bg-slate-100 p-2 rounded-lg border border-slate-200">
-                        <label for="expenseFilterDate" class="text-[10px] font-bold text-slate-500 uppercase whitespace-nowrap">Tanggal Catat:</label>
-                        <input type="date" id="expenseFilterDate" onchange="renderExpenses()" class="bg-white text-xs text-slate-800 font-bold rounded px-2.5 py-1 outline-none border border-slate-300 w-full cursor-pointer focus:border-emerald-600">
+                    <div class="flex flex-col gap-1.5 bg-slate-100 p-2.5 rounded-lg border border-slate-200">
+                        <div class="flex items-center gap-2">
+                            <label for="expenseFilterDate" class="text-[10px] font-bold text-slate-500 uppercase whitespace-nowrap">Tanggal Catat:</label>
+                            <input type="date" id="expenseFilterDate" onchange="renderExpenses()" class="bg-white text-xs text-slate-800 font-bold rounded px-2.5 py-1 outline-none border border-slate-300 w-full cursor-pointer focus:border-emerald-600">
+                        </div>
+                        
+                        <label class="flex items-center gap-2 mt-1 cursor-pointer pt-1.5 border-t border-slate-200/60">
+                            <input type="checkbox" id="showAllExpenses" onchange="renderExpenses()" class="w-3.5 h-3.5 text-emerald-600 bg-white border-slate-300 rounded-sm focus:ring-emerald-500 cursor-pointer">
+                            <span class="text-[10px] text-slate-600 font-bold uppercase tracking-wide">Tampilkan Semua di Siklus Ini</span>
+                        </label>
                     </div>
                 </div>
 
@@ -253,7 +256,7 @@
                     <table class="w-full text-left text-xs border-collapse whitespace-nowrap">
                         <thead>
                             <tr class="bg-slate-100 text-slate-600 font-bold uppercase border-b border-slate-200">
-                                <th class="p-2" style="width: 70px;">Jam</th>
+                                <th class="p-2" style="width: 70px;">Tgl/Jam</th>
                                 <th class="p-2">Kategori</th>
                                 <th class="p-2">Barang</th>
                                 <th class="p-2 text-right">Nominal</th>
@@ -262,7 +265,7 @@
                         </thead>
                         <tbody id="expenseTableBody" class="divide-y divide-slate-100"></tbody>
                     </table>
-                    <div id="emptyState" class="text-center py-6 text-slate-400 hidden font-medium">🍃 Tidak ada transaksi belanja pada tanggal terpilih.</div>
+                    <div id="emptyState" class="text-center py-6 text-slate-400 hidden font-medium">🍃 Tidak ada transaksi pada filter terpilih.</div>
                 </div>
             </div>
 
@@ -347,20 +350,17 @@
             document.getElementById('currentLiveDate').innerText = `${days[today.getDay()]}, ${today.getDate()} ${months[today.getMonth()]} ${today.getFullYear()}`;
         }
 
-        // FITUR BARU: Auto-select siklus berdasarkan tanggal hari ini
         function autoSelectCurrentCycle() {
             const today = new Date();
             const tDate = today.getDate();
-            let tMonth = today.getMonth() + 1; // 1-12
+            let tMonth = today.getMonth() + 1; 
 
-            // Logika Pergeseran: Jika tanggal masih <= 26, berarti masih masuk jatah gaji bulan lalu
             if (tDate <= 26) {
                 tMonth -= 1;
             }
 
             const monthMap = { 5: "Mei", 6: "Juni", 7: "Juli", 8: "Agustus", 9: "September", 10: "Oktober", 11: "November", 12: "Desember" };
             
-            // Karena web ini start dari Siklus Mei, jika bulan < 5, fallback ke Mei
             let activeCycle = monthMap[tMonth];
             if (!activeCycle) {
                 activeCycle = "Mei"; 
@@ -393,8 +393,9 @@
             const minD = `${startYear}-${strStartMonth}-27`;
             const maxD = `${endYear}-${strEndMonth}-26`;
             
-            datePicker.min = minD;
-            datePicker.max = maxD;
+            // Perbaikan Set Attribute untuk mengatasi bug iOS Safari
+            datePicker.setAttribute('min', minD);
+            datePicker.setAttribute('max', maxD);
 
             const currentVal = datePicker.value;
             const today = new Date();
@@ -683,23 +684,43 @@
             render();
         }
 
+        // FITUR BARU 2: Satpam Validasi JS
         function renderExpenses() {
             const currentMonth = getActiveMonth();
             const expenses = JSON.parse(localStorage.getItem(`exp_${currentMonth}`)) || [];
-            const filterDate = document.getElementById('expenseFilterDate').value;
+            
+            const datePicker = document.getElementById('expenseFilterDate');
+            const filterDate = datePicker.value;
+            const minD = datePicker.getAttribute('min');
+            const maxD = datePicker.getAttribute('max');
+            
+            // Satpam Validasi: Memantulkan akses dari kalender yang bocor di iOS Safari
+            if (filterDate < minD || filterDate > maxD) {
+                alert(`⚠️ TANGGAL DITOLAK\n\nSiklus pencatatan bulan ini dikunci hanya untuk rentang tanggal:\n${minD} s/d ${maxD}\n\nSistem mengembalikan Anda ke tanggal awal.`);
+                datePicker.value = minD;
+                return renderExpenses(); // Muat ulang fungsi dengan tanggal yang sudah dikoreksi
+            }
+
+            const showAll = document.getElementById('showAllExpenses').checked;
+            
             const tbody = document.getElementById('expenseTableBody');
             const emptyState = document.getElementById('emptyState');
             tbody.innerHTML = '';
+            
             let totalSpentThisMonth = 0;
             let displayCount = 0;
 
             expenses.forEach((exp, index) => {
                 totalSpentThisMonth += exp.amount;
-                if (exp.date === filterDate) {
+                
+                // Tampilkan data jika tanggal cocok ATAU jika kotak 'Tampilkan Semua' dicentang
+                if (exp.date === filterDate || showAll) {
                     displayCount++;
+                    const dateInfo = showAll ? `<span class="block text-[8px] text-emerald-600 mb-0.5">${exp.date}</span>` : '';
+                    
                     tbody.innerHTML += `
                         <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100">
-                            <td class="p-2 text-slate-400 text-[10px] font-mono font-medium">${exp.time || '-'}</td>
+                            <td class="p-2 text-slate-400 text-[10px] font-mono font-medium">${dateInfo}${exp.time || '-'}</td>
                             <td class="p-2"><span class="px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded-sm font-medium text-[9px] border border-slate-200">${exp.category || 'Lainnya'}</span></td>
                             <td class="p-2 text-slate-700 font-medium truncate max-w-[120px]">${exp.desc}</td>
                             <td class="p-2 text-right font-bold text-slate-800 font-mono">${formatRupiah(exp.amount)}</td>
@@ -787,7 +808,7 @@
         window.onload = function() {
             initTheme(); 
             renderLiveDate();
-            autoSelectCurrentCycle(); // BARIS BARU: Menjalankan pendeteksi siklus saat web dimuat
+            autoSelectCurrentCycle(); 
             syncDatePickerWithMonth();
             render();
         };
