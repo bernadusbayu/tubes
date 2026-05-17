@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Keuangan Mandiri 2026</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+
+    <header class="bg-[#1e5128] text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-5 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-xl font-bold tracking-wide uppercase">Dashboard Keuangan & Alokasi Rekening</h1>
+                <p class="text-xs text-emerald-200 mt-1">Sistem Kontrol Finansial Mandiri Performa 2026</p>
+            </div>
+            <div class="flex items-center gap-2 bg-[#2d6a4f] px-3 py-2 rounded-lg border border-emerald-600">
+                <label for="monthSelector" class="text-sm font-medium">Pilih Bulan:</label>
+                <select id="monthSelector" class="bg-white text-slate-800 text-sm rounded px-2 py-1 font-semibold outline-none" onchange="changeMonth()">
+                    <option value="Mei">Mei 2026</option>
+                    <option value="Juni">Juni 2026</option>
+                    <option value="Juli">Juli 2026</option>
+                    <option value="Agustus">Agustus 2026</option>
+                    <option value="September">September 2026</option>
+                    <option value="Oktober">Oktober 2026</option>
+                    <option value="November">November 2026</option>
+                    <option value="Desember">Desember 2026</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white p-4 rounded-xl shadow-xs border border-slate-200">
+                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Pendapatan (Gaji)</p>
+                <h3 class="text-xl font-bold text-slate-800 mt-1">Rp 7.590.000</h3>
+                <span class="text-[10px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-medium mt-2 inline-block">Masuk Rek 1</span>
+            </div>
+            <div class="bg-yellow-50 p-4 rounded-xl shadow-xs border border-yellow-200">
+                <p class="text-xs font-semibold text-yellow-700 uppercase tracking-wider">Rekening 1 (Utama)</p>
+                <h3 id="saldoRek1" class="text-xl font-bold text-yellow-800 mt-1">Rp 0</h3>
+                <p class="text-[10px] text-yellow-600 mt-1">Kost + Asuransi + Simpanan Bersih</p>
+            </div>
+            <div class="bg-orange-50 p-4 rounded-xl shadow-xs border border-orange-200">
+                <p class="text-xs font-semibold text-orange-700 uppercase tracking-wider">Rekening 2 (Operasional)</p>
+                <h3 id="saldoRek2" class="text-xl font-bold text-orange-800 mt-1">Rp 0</h3>
+                <p class="text-[10px] text-orange-600 mt-1">Wajib Ditransfer: Tagihan + Listrik + Belanja</p>
+            </div>
+            <div class="bg-emerald-50 p-4 rounded-xl shadow-xs border border-emerald-200">
+                <p class="text-xs font-semibold text-emerald-700 uppercase tracking-wider">Proyeksi Tabungan Des</p>
+                <h3 class="text-xl font-bold text-emerald-800 mt-1">Rp 20.747.034</h3>
+                <span class="text-[10px] text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full font-medium mt-2 inline-block">Surplus Aman</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <div class="bg-white p-5 rounded-xl shadow-xs border border-slate-200 lg:col-span-1">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-3 mb-4">
+                    <h2 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                        <span>📋</span> Checklist Tagihan Bulan Ini
+                    </h2>
+                    <span id="tagihanCount" class="text-xs bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded-full">0/0</span>
+                </div>
+                
+                <div id="checklistContainer" class="space-y-2">
+                    </div>
+
+                <div class="mt-5 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                    <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">💡 Instruksi Transfer Gaji</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Pindahkan tepat sebesar <strong id="instruksiPindahan" class="text-orange-600">Rp 0</strong> dari Rekening 1 ke **Rekening 2** untuk mengamankan seluruh operasional dan cicilan di atas.
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl shadow-xs border border-slate-200 lg:col-span-2">
+                <div class="border-b border-slate-100 pb-3 mb-4 flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+                    <h2 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                        <span>🛍️</span> Log Belanja Harian (Maks Rp1.500.000)
+                    </h2>
+                    <div class="text-right">
+                        <span class="text-xs text-slate-500">Sisa Saldo Belanja:</span>
+                        <span id="sisaBelanja" class="text-sm font-bold text-emerald-600 block sm:inline">Rp 1.500.000</span>
+                    </div>
+                </div>
+
+                <div class="w-full bg-slate-100 rounded-full h-3 mb-5 overflow-hidden">
+                    <div id="budgetProgressBar" class="bg-emerald-600 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+
+                <form id="expenseForm" onsubmit="addExpense(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                    <div class="sm:col-span-1">
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Nama/Deskripsi Barang</label>
+                        <input type="text" id="expDesc" required placeholder="Contoh: Nasi Geprek, Bensin" class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-2 outline-none focus:border-emerald-600">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Nominal (Rp)</label>
+                        <input type="number" id="expAmount" required placeholder="Contoh: 30000" class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-2 outline-none focus:border-emerald-600">
+                    </div>
+                    <div class="flex items-end">
+                        <button type="submit" class="w-full bg-[#2d6a4f] hover:bg-[#1e5128] text-white font-bold text-xs py-2 px-4 rounded transition-colors shadow-xs cursor-pointer">
+                            + Catat Pengeluaran
+                        </button>
+                    </div>
+                </form>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 font-bold uppercase tracking-wider border-b border-slate-200">
+                                <th class="p-3">Deskripsi Pengeluaran</th>
+                                <th class="p-3 text-right">Nominal</th>
+                                <th class="p-3 text-center" style="width: 80px;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expenseTableBody" class="divide-y divide-slate-100">
+                            </tbody>
+                    </table>
+                    <div id="emptyState" class="text-center py-8 text-slate-400 hidden">
+                        Belum ada pengeluaran harian tercatat untuk bulan ini.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Master Data Riil Sesuai Hasil Simulasi
+        const financialData = {
+            Mei: { gopay: 1406669, spay: 219278, tiktok: 465034, trvlk: 266000, inddna: 129000, rtn438: 439000, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 1210053, rek1: 3330053, rek2: 4724981 },
+            Juni: { gopay: 1305952, spay: 81702, tiktok: 305041, trvlk: 0, inddna: 129000, rtn438: 439000, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 1714346, rek1: 3834346, rek2: 4060695 },
+            Juli: { gopay: 725641, spay: 81700, tiktok: 190470, trvlk: 0, inddna: 129000, rtn438: 439000, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 2294659, rek1: 4414659, rek2: 3175341 },
+            Agustus: { gopay: 165867, spay: 27095, tiktok: 178698, trvlk: 0, inddna: 129000, rtn438: 439000, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 2909038, rek1: 5029038, rek2: 2560962 },
+            September: { gopay: 0, spay: 27095, tiktok: 118116, trvlk: 0, inddna: 129000, rtn438: 439000, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 3074905, rek1: 5194905, rek2: 2395095 },
+            Oktober: { gopay: 0, spay: 27097, tiktok: 52511, trvlk: 0, inddna: 129000, rtn438: 0, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 3513903, rek1: 5633903, rek2: 1956097 },
+            November: { gopay: 0, spay: 0, tiktok: 0, trvlk: 0, inddna: 0, rtn438: 0, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 3670000, rek1: 5790000, rek2: 1800000 },
+            Desember: { gopay: 0, spay: 0, tiktok: 0, trvlk: 0, inddna: 0, rtn438: 0, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 3670000, rek1: 5790000, rek2: 1800000 }
+        };
+
+        const BUDGET_LIMIT = 1500000;
+
+        function formatRupiah(number) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
+        }
+
+        function getActiveMonth() {
+            return document.getElementById('monthSelector').value;
+        }
+
+        // FUNGSI UTAMA: RENDER DASHBOARD
+        function render() {
+            const currentMonth = getActiveMonth();
+            const monthData = financialData[currentMonth];
+
+            // Render Ringkasan Saldo
+            document.getElementById('saldoRek1').innerText = formatRupiah(monthData.rek1);
+            document.getElementById('saldoRek2').innerText = formatRupiah(monthData.rek2);
+            document.getElementById('instruksiPindahan').innerText = formatRupiah(monthData.rek2);
+
+            // Generate Array Tagihan Aktif (Hanya tampilkan jika nominal > 0)
+            const checklistContainer = document.getElementById('checklistContainer');
+            checklistContainer.innerHTML = '';
+            
+            const tagihanList = [
+                { id: 'gopay', name: 'GoPay Later', amount: monthData.gopay },
+                { id: 'spay', name: 'Shopee PayLater', amount: monthData.spay },
+                { id: 'tiktok', name: 'TikTok PayLater', amount: monthData.tiktok },
+                { id: 'trvlk', name: 'Traveloka', amount: monthData.trvlk },
+                { id: 'inddna', name: 'Indodana', amount: monthData.inddna },
+                { id: 'rtn438', name: 'Rtn438 (Berkala)', amount: monthData.rtn438 },
+                { id: 'lstk', name: 'Tagihan Listrik & Pulsa', amount: monthData.lstk }
+            ].filter(item => item.amount > 0);
+
+            // Ambil data checklist lokal
+            const savedChecklist = JSON.parse(localStorage.getItem(`check_${currentMonth}`)) || {};
+
+            let checkedCount = 0;
+            tagihanList.forEach(item => {
+                const isChecked = savedChecklist[item.id] ? 'checked' : '';
+                if(savedChecklist[item.id]) checkedCount++;
+
+                checklistContainer.innerHTML += `
+                    <label class="flex items-center justify-between p-3 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer select-none transition-colors">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" ${isChecked} onchange="toggleChecklist('${item.id}')" class="w-4 h-4 text-emerald-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-emerald-500 focus:ring-2 cursor-pointer">
+                            <span class="text-xs font-semibold ${isChecked ? 'line-through text-slate-400' : 'text-slate-700'}">${item.name}</span>
+                        </div>
+                        <span class="text-xs font-bold ${isChecked ? 'text-slate-400' : 'text-amber-700'}">${formatRupiah(item.amount)}</span>
+                    </label>
+                `;
+            });
+            document.getElementById('tagihanCount').innerText = `${checkedCount}/${tagihanList.length}`;
+
+            // Render Belanja Harian
+            renderExpenses();
+        }
+
+        // TANGGANI CHECKLIST
+        function toggleChecklist(id) {
+            const currentMonth = getActiveMonth();
+            const savedChecklist = JSON.parse(localStorage.getItem(`check_${currentMonth}`)) || {};
+            
+            savedChecklist[id] = !savedChecklist[id];
+            localStorage.setItem(`check_${currentMonth}`, JSON.stringify(savedChecklist));
+            render();
+        }
+
+        // RENDER EXPENSES (BELANJA)
+        function renderExpenses() {
+            const currentMonth = getActiveMonth();
+            const expenses = JSON.parse(localStorage.getItem(`exp_${currentMonth}`)) || [];
+            const tbody = document.getElementById('expenseTableBody');
+            const emptyState = document.getElementById('emptyState');
+            
+            tbody.innerHTML = '';
+            
+            let totalSpent = 0;
+            expenses.forEach((exp, index) => {
+                totalSpent += exp.amount;
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="p-3 text-slate-700 font-medium">${exp.desc}</td>
+                        <td class="p-3 text-right font-bold text-slate-800">${formatRupiah(exp.amount)}</td>
+                        <td class="p-3 text-center">
+                            <button onclick="deleteExpense(${index})" class="text-rose-600 hover:text-rose-900 font-semibold text-[11px] bg-rose-50 px-2 py-0.5 rounded cursor-pointer transition-colors">Hapus</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            if(expenses.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            // Hitung sisa budget belanja
+            const remaining = BUDGET_LIMIT - totalSpent;
+            const sisaElement = document.getElementById('sisaBelanja');
+            sisaElement.innerText = formatRupiah(remaining);
+
+            if(remaining < 0) {
+                sisaElement.className = "text-sm font-bold text-rose-600";
+            } else {
+                sisaElement.className = "text-sm font-bold text-emerald-600";
+            }
+
+            // Update Progress Bar
+            const percent = Math.min((totalSpent / BUDGET_LIMIT) * 100, 100);
+            const progressBar = document.getElementById('budgetProgressBar');
+            progressBar.style.width = `${percent}%`;
+            
+            if(percent >= 100) {
+                progressBar.className = "bg-rose-600 h-3 rounded-full transition-all duration-300";
+            } else if (percent >= 80) {
+                progressBar.className = "bg-amber-500 h-3 rounded-full transition-all duration-300";
+            } else {
+                progressBar.className = "bg-emerald-600 h-3 rounded-full transition-all duration-300";
+            }
+        }
+
+        // TAMBAH CATATAN BELANJA
+        function addExpense(e) {
+            e.preventDefault();
+            const currentMonth = getActiveMonth();
+            const descInput = document.getElementById('expDesc');
+            const amountInput = document.getElementById('expAmount');
+
+            const expenses = JSON.parse(localStorage.getItem(`exp_${currentMonth}`)) || [];
+            expenses.push({
+                desc: descInput.value,
+                amount: parseInt(amountInput.value)
+            });
+
+            localStorage.setItem(`exp_${currentMonth}`, JSON.stringify(expenses));
+            
+            // Reset Form
+            descInput.value = '';
+            amountInput.value = '';
+            
+            render();
+        }
+
+        // HAPUS BELANJA
+        function deleteExpense(index) {
+            const currentMonth = getActiveMonth();
+            const expenses = JSON.parse(localStorage.getItem(`exp_${currentMonth}`)) || [];
+            expenses.splice(index, 1);
+            localStorage.setItem(`exp_${currentMonth}`, JSON.stringify(expenses));
+            render();
+        }
+
+        function changeMonth() {
+            render();
+        }
+
+        // Inisialisasi awal saat halaman dimuat
+        window.onload = function() {
+            render();
+        };
+    </script>
+</body>
+</html>
