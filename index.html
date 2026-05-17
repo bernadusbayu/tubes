@@ -7,7 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
         
         .hide-scrollbar::-webkit-scrollbar { display: none; }
@@ -22,18 +22,22 @@
                 <h1 class="text-base sm:text-xl font-bold tracking-wide uppercase">Finansial Mandiri 2026</h1>
                 <p class="text-[10px] text-emerald-200 hidden sm:block">Sistem Kontrol Alokasi Rekening Performa Optimal</p>
             </div>
-            <div class="flex items-center gap-2 bg-[#2d6a4f] px-2.5 py-1.5 rounded-lg border border-emerald-600">
-                <label for="monthSelector" class="text-xs font-medium whitespace-nowrap">Bulan:</label>
-                <select id="monthSelector" class="bg-white text-slate-800 text-xs rounded px-2 py-0.5 font-semibold outline-none cursor-pointer" onchange="changeMonth()">
-                    <option value="Mei">Mei 2026</option>
-                    <option value="Juni">Juni 2026</option>
-                    <option value="Juli">Juli 2026</option>
-                    <option value="Agustus">Agustus 2026</option>
-                    <option value="September">September 2026</option>
-                    <option value="Oktober">Oktober 2026</option>
-                    <option value="November">November 2026</option>
-                    <option value="Desember">Desember 2026</option>
-                </select>
+            
+            <div class="flex flex-col items-end gap-1">
+                <div class="flex items-center gap-2 bg-[#2d6a4f] px-2.5 py-1.5 rounded-lg border border-emerald-600">
+                    <label for="monthSelector" class="text-xs font-medium whitespace-nowrap">Bulan:</label>
+                    <select id="monthSelector" class="bg-white text-slate-800 text-xs rounded px-2 py-0.5 font-semibold outline-none cursor-pointer" onchange="changeMonth()">
+                        <option value="Mei">Mei 2026</option>
+                        <option value="Juni">Juni 2026</option>
+                        <option value="Juli">Juli 2026</option>
+                        <option value="Agustus">Agustus 2026</option>
+                        <option value="September">September 2026</option>
+                        <option value="Oktober">Oktober 2026</option>
+                        <option value="November">November 2026</option>
+                        <option value="Desember">Desember 2026</option>
+                    </select>
+                </div>
+                <p id="currentLiveDate" class="text-[10px] text-emerald-200 font-semibold tracking-wide mt-0.5 uppercase"></p>
             </div>
         </div>
     </header>
@@ -247,17 +251,16 @@
         const asrn_val = 270000;
         const lstk_val = 300000;
 
-        // FIXED DATA ENGINE: Menyesuaikan tanggal jatuh tempo riil sesuai inputan terbaru pengguna
         const billDueDays = {
-            gopay: 1,       // Tanggal 1 bulan berikutnya
-            spay: 5,        // Tanggal 5 bulan berikutnya
-            tiktok: 2,      // Tanggal 2 bulan berikutnya
-            trvlk: 28,      // Tanggal 28 bulan berjalan (karena >= 27)
-            inddna: 27,     // Tanggal 27 bulan berjalan (karena >= 27)
-            rtn438: 1,      // Kartu Kredit tanggal 1 bulan berikutnya
-            kost: 6,        // Pembayaran Kost tanggal 6 bulan berikutnya
-            asrn: 28,       // Asuransi Kesehatan tanggal 28 bulan berjalan
-            lstk: null      // BARU: Tagihan tidak di-input = Fleksibel (Tanpa info tanggal & Tanpa alarm H-3)
+            gopay: 1,       
+            spay: 5,        
+            tiktok: 2,      
+            trvlk: 28,      
+            inddna: 27,     
+            rtn438: 1,      
+            kost: 6,        
+            asrn: 28,       
+            lstk: null      
         };
 
         const rawDebts = {
@@ -279,6 +282,20 @@
 
         function getActiveMonth() {
             return document.getElementById('monthSelector').value;
+        }
+
+        // BARU: Fungsi Otomatis untuk Meng-update Teks Hari, Tanggal, Bulan, Tahun Berjalan Berdasarkan Perangkat Anda
+        function renderLiveDate() {
+            const today = new Date();
+            const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+            const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            
+            const dayName = days[today.getDay()];
+            const dateNum = today.getDate();
+            const monthName = months[today.getMonth()];
+            const yearNum = today.getFullYear();
+            
+            document.getElementById('currentLiveDate').innerText = `${dayName}, ${dateNum} ${monthName} ${yearNum}`;
         }
 
         function syncDatePickerWithMonth() {
@@ -446,7 +463,6 @@
                 let dayLabel = '';
                 let formattedDateStr = '';
 
-                // MODIFIKASI LAYANAN: Evaluasi apakah tagihan memiliki tanggal jatuh tempo atau bersifat fleksibel
                 if (item.dueDay !== null && item.dueDay !== undefined) {
                     let targetMonthIdx = baseMonthIdx;
                     let targetYear = 2026;
@@ -469,7 +485,6 @@
                     }
                     formattedDateStr = `<span class="text-[9px] font-medium text-slate-400 mt-0.5">Jatuh Tempo: ${item.dueDay} ${indonesianMonths[dueDate.getMonth()]}</span>`;
                 } else {
-                    // Output visual untuk pos yang tidak dikunci tanggalnya oleh pengguna
                     formattedDateStr = `<span class="text-[9px] font-medium text-emerald-600 mt-0.5">📅 Pembayaran Fleksibel</span>`;
                 }
 
@@ -558,7 +573,6 @@
             render();
         }
 
-        // Penanganan aktivasi centang checklist tagihan
         function toggleChecklist(id) {
             const currentMonth = getActiveMonth();
             const savedChecklist = JSON.parse(localStorage.getItem(`check_${currentMonth}`)) || {};
@@ -665,6 +679,7 @@
         }
 
         window.onload = function() {
+            renderLiveDate(); // Eksekusi render teks info penanggalan riil hari ini
             syncDatePickerWithMonth();
             render();
         };
