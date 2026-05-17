@@ -6,6 +6,7 @@
     <title>Dashboard Keuangan Mandiri 2026</title>
     
     <style type="tailwindcss">
+        @import "tailwindcss";
         @variant dark (.dark &);
     </style>
     
@@ -82,10 +83,10 @@
                 <h3 id="tabunganTercapai" class="text-sm sm:text-base font-bold mt-1">Rp 0</h3>
                 <p class="text-[9px] sm:text-[10px] text-blue-200 mt-1">Saldo Akhir M-Banking</p>
             </div>
-            <div class="bg-emerald-50 p-4 rounded-xl shadow-xs border border-emerald-200 shrink-0 w-[calc(50%-8px)] lg:w-full snap-start">
-                <p class="text-[10px] sm:text-[11px] font-semibold text-emerald-700 uppercase tracking-wider">Proyeksi Akhir Des</p>
-                <h3 id="proyeksiAkhir" class="text-sm sm:text-base font-bold text-emerald-800 mt-1">Rp 0</h3>
-                <span class="text-[9px] sm:text-[10px] text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full font-medium mt-1 inline-block">Kalkulasi Otomatis</span>
+            <div class="bg-emerald-50 dark:bg-emerald-950/30 p-4 rounded-xl shadow-xs border border-emerald-200 dark:border-emerald-900/50 shrink-0 w-[calc(50%-8px)] lg:w-full snap-start transition-colors">
+                <p class="text-[10px] sm:text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">Proyeksi Akhir Des</p>
+                <h3 id="proyeksiAkhir" class="text-sm sm:text-base font-bold text-emerald-800 dark:text-emerald-300 mt-1">Rp 0</h3>
+                <span class="text-[9px] sm:text-[10px] text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-950/50 px-2 py-0.5 rounded-full font-medium mt-1 inline-block">Kalkulasi Otomatis</span>
             </div>
         </div>
 
@@ -271,7 +272,7 @@
             Juli: { gopay: 725641, spay: 81700, tiktok: 190470, trvlk: 0, inddna: 129000, rtn438: 443000 },
             Agustus: { gopay: 165867, spay: 27095, tiktok: 178698, trvlk: 0, inddna: 129000, rtn438: 443000 },
             September: { gopay: 0, spay: 27095, tiktok: 118116, trvlk: 0, inddna: 129000, rtn438: 443000 },
-            Oktober: { gopay: 0, spay: 27097, tiktok: 52511, trvlk: 0, iddna: 129000, rtn438: 0 },
+            Oktober: { gopay: 0, spay: 27097, tiktok: 52511, trvlk: 0, inddna: 129000, rtn438: 0 }, // FIXED: typo iddna diganti ke inddna
             November: { gopay: 0, spay: 0, tiktok: 0, trvlk: 0, inddna: 0, rtn438: 0 },
             Desember: { gopay: 0, spay: 0, tiktok: 0, trvlk: 0, inddna: 0, rtn438: 0 }
         };
@@ -286,7 +287,7 @@
             return document.getElementById('monthSelector').value;
         }
 
-        // MESIN LOGIKA BARU: Mengatur tema dan mengunci setelan meta color-scheme browser agar tidak overwrite otomatis
+        // MANAGEMENT THEME CORE: Menyinkronkan preferensi tema lokal dan meta warna browser secara absolut
         function setTheme(theme) {
             const icon = document.getElementById('themeIcon');
             if (theme === 'dark') {
@@ -303,7 +304,6 @@
         }
 
         function initTheme() {
-            // Membaca simpanan tema, jika kosong/baru pertama kali dibuka, default ke light mode
             const savedTheme = localStorage.getItem('theme') || 'light';
             setTheme(savedTheme);
         }
@@ -313,11 +313,6 @@
                 setTheme('light');
             } else {
                 setTheme('dark');
-            }
-            // Segarkan grafik jika sedang dalam kondisi terbuka di layar
-            const modal = document.getElementById('chartModal');
-            if (modal && !modal.classList.contains('hidden')) {
-                openChartModal();
             }
         }
 
@@ -713,7 +708,7 @@
         }
 
         window.onload = function() {
-            initTheme(); // Dieksekusi pertama kali untuk menyinkronkan selector & mencegah flash screen
+            initTheme(); // Dieksekusi paling pertama untuk mengunci kelas tema sebelum halaman tampil
             renderLiveDate();
             syncDatePickerWithMonth();
             render();
