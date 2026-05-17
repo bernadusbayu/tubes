@@ -9,19 +9,23 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
+        
+        /* Utility khusus untuk menyembunyikan scrollbar bawaan browser agar UI terlihat seperti aplikasi native */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen">
+<body class="bg-slate-50 text-slate-800 min-h-screen selection:bg-emerald-100">
 
-    <header class="bg-[#1e5128] text-white shadow-md">
-        <div class="max-w-[1600px] mx-auto px-4 py-5 flex flex-col sm:flex-row justify-between items-center gap-4">
+    <header class="bg-[#1e5128] text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-[1600px] mx-auto px-4 py-4 flex flex-row justify-between items-center gap-4">
             <div>
-                <h1 class="text-xl font-bold tracking-wide uppercase">Dashboard Keuangan & Alokasi Rekening</h1>
-                <p class="text-xs text-emerald-200 mt-1">Sistem Kontrol Finansial Mandiri Performa 2026</p>
+                <h1 class="text-base sm:text-xl font-bold tracking-wide uppercase">Finansial Mandiri 2026</h1>
+                <p class="text-[10px] text-emerald-200 hidden sm:block">Sistem Kontrol Alokasi Rekening Performa Optimal</p>
             </div>
-            <div class="flex items-center gap-2 bg-[#2d6a4f] px-3 py-2 rounded-lg border border-emerald-600">
-                <label for="monthSelector" class="text-sm font-medium">Pilih Bulan:</label>
-                <select id="monthSelector" class="bg-white text-slate-800 text-sm rounded px-2 py-1 font-semibold outline-none" onchange="changeMonth()">
+            <div class="flex items-center gap-2 bg-[#2d6a4f] px-2.5 py-1.5 rounded-lg border border-emerald-600">
+                <label for="monthSelector" class="text-xs font-medium whitespace-nowrap">Bulan:</label>
+                <select id="monthSelector" class="bg-white text-slate-800 text-xs rounded px-2 py-0.5 font-semibold outline-none cursor-pointer" onchange="changeMonth()">
                     <option value="Mei">Mei 2026</option>
                     <option value="Juni">Juni 2026</option>
                     <option value="Juli">Juli 2026</option>
@@ -35,55 +39,68 @@
         </div>
     </header>
 
-    <main class="max-w-[1600px] mx-auto px-4 py-6">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
-            <div class="bg-white p-4 rounded-xl shadow-xs border border-slate-200">
-                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Pendapatan</p>
+    <main class="max-w-[1600px] mx-auto px-4 py-4">
+        
+        <div class="flex lg:grid lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-5 overflow-x-auto pb-2 snap-x snap-mandatory hide-scrollbar">
+            <div class="bg-white p-4 rounded-xl shadow-xs border border-slate-200 shrink-0 w-[260px] sm:w-[280px] lg:w-full snap-start">
+                <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Total Pendapatan</p>
                 <h3 id="displayGaji" class="text-base font-bold text-slate-800 mt-1">Rp 0</h3>
-                <span class="text-[10px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-medium mt-2 inline-block">Akumulasi Uang Masuk</span>
+                <span class="text-[10px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-medium mt-1.5 inline-block">Uang Masuk Akumulatif</span>
             </div>
-            <div class="bg-yellow-50/60 p-4 rounded-xl shadow-xs border border-yellow-200">
-                <p class="text-xs font-semibold text-yellow-700 uppercase tracking-wider">Target Awal Rek 1</p>
+            <div class="bg-yellow-50/60 p-4 rounded-xl shadow-xs border border-yellow-200 shrink-0 w-[260px] sm:w-[280px] lg:w-full snap-start">
+                <p class="text-[11px] font-semibold text-yellow-700 uppercase tracking-wider">Target Awal Rek 1</p>
                 <h3 id="saldoRek1" class="text-base font-bold text-yellow-800 mt-1">Rp 0</h3>
                 <p class="text-[10px] text-yellow-600 mt-1">Kost + Asrn + Simpanan</p>
             </div>
-            <div class="bg-orange-50/60 p-4 rounded-xl shadow-xs border border-orange-200">
-                <p class="text-xs font-semibold text-orange-700 uppercase tracking-wider">Target Pindahan Rek 2</p>
+            <div class="bg-orange-50/60 p-4 rounded-xl shadow-xs border border-orange-200 shrink-0 w-[260px] sm:w-[280px] lg:w-full snap-start">
+                <p class="text-[11px] font-semibold text-orange-700 uppercase tracking-wider">Target Pindahan Rek 2</p>
                 <h3 id="saldoRek2" class="text-base font-bold text-orange-800 mt-1">Rp 0</h3>
                 <p class="text-[10px] text-orange-600 mt-1">Alokasi Operasional</p>
             </div>
-            <div class="bg-indigo-50 p-4 rounded-xl shadow-xs border border-indigo-200">
-                <p class="text-xs font-semibold text-indigo-700 uppercase tracking-wider">Tabungan Bulan Ini</p>
+            <div class="bg-indigo-50 p-4 rounded-xl shadow-xs border border-indigo-200 shrink-0 w-[260px] sm:w-[280px] lg:w-full snap-start">
+                <p class="text-[11px] font-semibold text-indigo-700 uppercase tracking-wider">Tabungan Bulan Ini</p>
                 <h3 id="tabunganBulanIni" class="text-base font-bold text-indigo-800 mt-1">Rp 0</h3>
                 <p id="subTabunganBulanIni" class="text-[10px] text-indigo-500 mt-1">Murni bersih bulan terpilih</p>
             </div>
-            <div class="bg-blue-600 p-4 rounded-xl shadow-md border border-blue-700 text-white">
-                <p class="text-xs font-semibold uppercase tracking-wider text-blue-100">Total Uang Ditabung</p>
+            <div class="bg-blue-600 p-4 rounded-xl shadow-md border border-blue-700 text-white shrink-0 w-[260px] sm:w-[280px] lg:w-full snap-start">
+                <p class="text-[11px] font-semibold uppercase tracking-wider text-blue-100">Total Uang Ditabung</p>
                 <h3 id="tabunganTercapai" class="text-base font-bold mt-1">Rp 0</h3>
-                <p class="text-[10px] text-blue-200 mt-1">Saldo Terakhir di M-Banking</p>
+                <p class="text-[10px] text-blue-200 mt-1">Saldo Riil M-Banking</p>
             </div>
-            <div class="bg-emerald-50 p-4 rounded-xl shadow-xs border border-emerald-200">
-                <p class="text-xs font-semibold text-emerald-700 uppercase tracking-wider">Proyeksi Akhir Des</p>
+            <div class="bg-emerald-50 p-4 rounded-xl shadow-xs border border-emerald-200 shrink-0 w-[260px] sm:w-[280px] lg:w-full snap-start">
+                <p class="text-[11px] font-semibold text-emerald-700 uppercase tracking-wider">Proyeksi Akhir Des</p>
                 <h3 id="proyeksiAkhir" class="text-base font-bold text-emerald-800 mt-1">Rp 0</h3>
                 <span class="text-[10px] text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full font-medium mt-1 inline-block">Kalkulasi Otomatis</span>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:hidden flex bg-slate-200 p-1 rounded-xl mb-4 gap-1 sticky top-[60px] z-40 backdrop-blur-md bg-opacity-90">
+            <button id="tab0" onclick="scrollToSlide(0)" class="flex-1 text-center py-2 text-xs font-bold rounded-lg bg-[#2d6a4f] text-white shadow-xs transition-all duration-200">📋 Tagihan & Saldo</button>
+            <button id="tab1" onclick="scrollToSlide(1)" class="flex-1 text-center py-2 text-xs font-bold rounded-lg text-slate-600 transition-all duration-200">💰 Pemasukan</button>
+            <button id="tab2" onclick="scrollToSlide(2)" class="flex-1 text-center py-2 text-xs font-bold rounded-lg text-slate-600 transition-all duration-200">🛍️ Belanja</button>
+        </div>
+
+        <div id="slidesContainer" onscroll="handleSlidesScroll()" class="flex lg:grid lg:grid-cols-3 gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth w-full hide-scrollbar pb-6 lg:pb-0">
             
-            <div class="space-y-4">
-                <div class="bg-white p-5 rounded-xl shadow-xs border border-slate-200">
-                    <div class="flex justify-between items-center border-b border-slate-100 pb-3 mb-4">
+            <div id="slide0" class="w-full md:w-[calc(50%-12px)] lg:w-full shrink-0 snap-start space-y-4">
+                
+                <div class="bg-white rounded-xl shadow-xs border border-slate-200 overflow-hidden">
+                    <button onclick="toggleChecklistDropdown()" class="w-full flex justify-between items-center p-4 bg-slate-50 border-b border-slate-100 cursor-pointer hover:bg-slate-100/70 transition-colors">
                         <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2">
-                            <span>📋</span> Checklist Pembayaran Tagihan
+                            <span>📋</span> Checklist Bayar Tagihan
                         </h2>
-                        <span id="tagihanCount" class="text-xs bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded-full">0/0</span>
-                    </div>
-                    <div id="checklistContainer" class="space-y-2"></div>
-                    <div class="mt-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
-                        <p class="text-[11px] text-slate-600 leading-relaxed">
-                            Instruksi Pindahan: Transfer <strong id="instruksiPindahan" class="text-orange-600">Rp 0</strong> ke **Rekening 2**.
-                        </p>
+                        <div class="flex items-center gap-2">
+                            <span id="tagihanCount" class="text-xs bg-slate-200 text-slate-700 font-bold px-2 py-0.5 rounded-full">0/0</span>
+                            <span id="dropdownArrow" class="text-slate-400 font-bold text-xs transition-transform duration-200">▼</span>
+                        </div>
+                    </button>
+                    <div id="dropdownContent" class="p-4 pt-3 space-y-2">
+                        <div id="checklistContainer" class="space-y-2"></div>
+                        <div class="mt-3 p-2.5 bg-slate-50 rounded border border-slate-200">
+                            <p class="text-[11px] text-slate-600 leading-relaxed">
+                                Instruksi Pindahan: Transfer <strong id="instruksiPindahan" class="text-orange-600">Rp 0</strong> ke **Rekening 2**.
+                            </p>
+                        </div>
                     </div>
                 </div>
 
@@ -91,28 +108,25 @@
                     <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2 mb-1">
                         <span>⚙️</span> Sinkronisasi M-Banking <span id="inputMonthLabel" class="text-blue-600 font-bold"></span>
                     </h2>
-                    <p class="text-[10px] text-slate-400 mb-4">Setiap akhir bulan sebelum gajihan baru masuk, ketikkan angka total saldo yang tertera di m-banking Anda saat itu.</p>
+                    <p class="text-[10px] text-slate-400 mb-3">Masukkan saldo m-banking Anda di tiap akhir bulan sebelum gajihan baru masuk.</p>
                     <div class="flex gap-2">
-                        <input type="number" id="globalBalanceInput" placeholder="Ketik saldo m-banking riil..." class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-2 outline-none focus:border-blue-600">
-                        <button onclick="updateGlobalBalance()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2 rounded transition-colors whitespace-nowrap cursor-pointer">
-                            Simpan Saldo
-                        </button>
+                        <input type="number" id="globalBalanceInput" placeholder="Ketik saldo m-banking..." class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-2 outline-none focus:border-blue-600">
+                        <button onclick="updateGlobalBalance()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2 rounded transition-colors whitespace-nowrap cursor-pointer">Simpan</button>
                     </div>
-                    <div id="balanceHistoryBadge" class="mt-3.5 p-2.5 bg-blue-50 rounded border border-blue-100 flex justify-between items-center hidden">
-                        <span class="text-[11px] text-slate-600">Saldo Riil Bulan Ini: <strong id="loggedBalanceText" class="text-blue-700 font-bold">Rp 0</strong></span>
+                    <div id="balanceHistoryBadge" class="mt-3 p-2 bg-blue-50 rounded border border-blue-100 flex justify-between items-center hidden">
+                        <span class="text-[11px] text-slate-600">Tercatat: <strong id="loggedBalanceText" class="text-blue-700 font-bold">Rp 0</strong></span>
                         <button onclick="resetGlobalBalance()" class="text-rose-600 hover:text-rose-800 font-bold text-[10px] bg-white px-2 py-0.5 border border-rose-200 rounded cursor-pointer">Hapus</button>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white p-5 rounded-xl shadow-xs border border-slate-200">
+            <div id="slide1" class="w-full md:w-[calc(50%-12px)] lg:w-full shrink-0 snap-start bg-white p-5 rounded-xl shadow-xs border border-slate-200">
                 <div class="border-b border-slate-100 pb-3 mb-4">
-                    <h2 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                    <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2">
                         <span>💰</span> Log Aliran Uang Masuk
                     </h2>
                 </div>
-
-                <form id="incomeForm" onsubmit="addIncome(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-5 p-3 bg-emerald-50/40 rounded-lg border border-emerald-200">
+                <form id="incomeForm" onsubmit="addIncome(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-4 p-3 bg-emerald-50/40 rounded-lg border border-emerald-200">
                     <div class="sm:col-span-3">
                         <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Kategori Pendapatan</label>
                         <select id="incCategory" class="w-full text-xs bg-white border border-slate-300 rounded px-2 py-1.5 outline-none focus:border-emerald-600 font-medium">
@@ -124,28 +138,25 @@
                     </div>
                     <div class="sm:col-span-2">
                         <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Keterangan / Sumber</label>
-                        <input type="text" id="incDesc" required placeholder="Contoh: Gaji Pokok PT X" class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-1.5 outline-none focus:border-emerald-600">
+                        <input type="text" id="incDesc" required placeholder="Contoh: Gaji Pokok" class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-1.5 outline-none focus:border-emerald-600">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nominal (Rp)</label>
                         <input type="number" id="incAmount" required placeholder="7590000" class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-1.5 outline-none focus:border-emerald-600">
                     </div>
                     <div class="sm:col-span-3 mt-1">
-                        <button type="submit" class="w-full bg-[#2d6a4f] hover:bg-[#1e5128] text-white font-bold text-xs py-2 px-4 rounded transition-colors shadow-xs cursor-pointer text-center">
-                            + Catat Uang Masuk
-                        </button>
+                        <button type="submit" class="w-full bg-[#2d6a4f] hover:bg-[#1e5128] text-white font-bold text-xs py-2 rounded transition-colors cursor-pointer text-center">+ Catat Uang Masuk</button>
                     </div>
                 </form>
-
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs border-collapse">
+                    <table class="w-full text-left text-xs border-collapse whitespace-nowrap">
                         <thead>
-                            <tr class="bg-slate-100 text-slate-600 font-bold uppercase tracking-wider border-b border-slate-200">
-                                <th class="p-2.5" style="width: 95px;">Waktu</th>
-                                <th class="p-2.5" style="width: 100px;">Kategori</th>
-                                <th class="p-2.5">Keterangan</th>
-                                <th class="p-2.5 text-right" style="width: 95px;">Nominal</th>
-                                <th class="p-2.5 text-center" style="width: 45px;">Aksi</th>
+                            <tr class="bg-slate-100 text-slate-600 font-bold uppercase border-b border-slate-200">
+                                <th class="p-2">Waktu</th>
+                                <th class="p-2">Kategori</th>
+                                <th class="p-2">Keterangan</th>
+                                <th class="p-2 text-right">Nominal</th>
+                                <th class="p-2 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="incomeTableBody" class="divide-y divide-slate-100"></tbody>
@@ -153,28 +164,22 @@
                 </div>
             </div>
 
-            <div class="bg-white p-5 rounded-xl shadow-xs border border-slate-200">
+            <div id="slide2" class="w-full md:w-[calc(50%-12px)] lg:w-full shrink-0 snap-start bg-white p-5 rounded-xl shadow-xs border border-slate-200">
                 <div class="border-b border-slate-100 pb-3 mb-4 flex justify-between items-center gap-2">
-                    <h2 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                    <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2">
                         <span>🛍️</span> Log Belanja Harian
                     </h2>
                     <div class="flex items-center gap-2">
-                        <button onclick="openChartModal()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-[11px] py-1 px-2.5 rounded border border-indigo-200 transition-all cursor-pointer shadow-2xs">
-                            📊 Grafik
-                        </button>
-                        <div class="text-right">
-                            <span id="sisaBelanja" class="text-xs font-bold text-emerald-600">Rp 1.500.000</span>
-                        </div>
+                        <button onclick="openChartModal()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-[10px] py-1 px-2 rounded border border-indigo-200 cursor-pointer shadow-2xs">📊 Grafik</button>
+                        <span id="sisaBelanja" class="text-xs font-bold text-emerald-600">Rp 1.500.000</span>
                     </div>
                 </div>
-
-                <div class="w-full bg-slate-100 rounded-full h-2 mb-4 overflow-hidden">
-                    <div id="budgetProgressBar" class="bg-emerald-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 mb-4 overflow-hidden">
+                    <div id="budgetProgressBar" class="bg-emerald-600 h-1.5 rounded-full transition-all duration-300" style="width: 0%"></div>
                 </div>
-
-                <form id="expenseForm" onsubmit="addExpense(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-5 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                <form id="expenseForm" onsubmit="addExpense(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
                     <div class="sm:col-span-3">
-                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Pilih Kategori Belanja</label>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Kategori Belanja</label>
                         <select id="expCategory" class="w-full text-xs bg-white border border-slate-300 rounded px-2 py-1.5 outline-none focus:border-emerald-600 font-medium">
                             <option value="Makan/Minum">🍔 Makan/Minum</option>
                             <option value="Jajan/Kopi">☕ Jajan/Kopi</option>
@@ -193,26 +198,23 @@
                         <input type="number" id="expAmount" required placeholder="30000" class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-1.5 outline-none focus:border-emerald-600">
                     </div>
                     <div class="sm:col-span-3 mt-1">
-                        <button type="submit" class="w-full bg-[#2d6a4f] hover:bg-[#1e5128] text-white font-bold text-xs py-2 px-4 rounded transition-colors shadow-xs cursor-pointer text-center">
-                            + Catat Pengeluaran
-                        </button>
+                        <button type="submit" class="w-full bg-[#2d6a4f] hover:bg-[#1e5128] text-white font-bold text-xs py-2 rounded transition-colors cursor-pointer text-center">+ Catat Pengeluaran</button>
                     </div>
                 </form>
-
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs border-collapse">
+                    <table class="w-full text-left text-xs border-collapse whitespace-nowrap">
                         <thead>
-                            <tr class="bg-slate-100 text-slate-600 font-bold uppercase tracking-wider border-b border-slate-200">
-                                <th class="p-2.5" style="width: 95px;">Waktu</th>
-                                <th class="p-2.5" style="width: 100px;">Kategori</th>
-                                <th class="p-2.5">Barang</th>
-                                <th class="p-2.5 text-right" style="width: 95px;">Nominal</th>
-                                <th class="p-2.5 text-center" style="width: 45px;">Aksi</th>
+                            <tr class="bg-slate-100 text-slate-600 font-bold uppercase border-b border-slate-200">
+                                <th class="p-2">Waktu</th>
+                                <th class="p-2">Kategori</th>
+                                <th class="p-2">Barang</th>
+                                <th class="p-2 text-right">Nominal</th>
+                                <th class="p-2 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="expenseTableBody" class="divide-y divide-slate-100"></tbody>
                     </table>
-                    <div id="emptyState" class="text-center py-8 text-slate-400 hidden">Belum ada pengeluaran harian.</div>
+                    <div id="emptyState" class="text-center py-6 text-slate-400 hidden">Belum ada pengeluaran harian.</div>
                 </div>
             </div>
 
@@ -223,13 +225,9 @@
         <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 relative border border-slate-100">
             <button onclick="closeChartModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-xl font-semibold cursor-pointer">&times;</button>
             <div class="border-b border-slate-100 pb-2 mb-4">
-                <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
-                    📊 Proporsi Belanja Bulanan <span id="chartMonthLabel" class="text-indigo-600"></span>
-                </h3>
+                <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">📊 Proporsi Belanja Bulanan <span id="chartMonthLabel" class="text-indigo-600"></span></h3>
             </div>
-            <div class="w-full max-h-[280px] flex justify-center items-center my-4">
-                <canvas id="categoryChart"></canvas>
-            </div>
+            <div class="w-full max-h-[280px] flex justify-center items-center my-4"><canvas id="categoryChart"></canvas></div>
             <div id="chartEmptyState" class="text-center py-16 text-slate-400 hidden font-medium">❌ Belum ada item belanja harian.</div>
         </div>
     </div>
@@ -263,33 +261,65 @@
             return document.getElementById('monthSelector').value;
         }
 
-        // FIXED: AMBIL DATA DARI LOCAL STORAGE TANPA LOGIKA FORCING YANG SALAH
+        // BARU: MANAJEMEN SLIDER SWIPER & SINKRONISASI AKTIF TAB
+        function handleSlidesScroll() {
+            if (window.innerWidth >= 1024) return; // Hiraukan jika dibuka di laptop/PC desktop
+            const container = document.getElementById('slidesContainer');
+            const scrollLeft = container.scrollLeft;
+            const slideWidth = container.clientWidth;
+            const activeIndex = Math.round(scrollLeft / slideWidth);
+            
+            for (let i = 0; i <= 2; i++) {
+                const tab = document.getElementById(`tab${i}`);
+                if (i === activeIndex) {
+                    tab.className = "flex-1 text-center py-2 text-xs font-bold rounded-lg bg-[#2d6a4f] text-white shadow-xs transition-all duration-200";
+                } else {
+                    tab.className = "flex-1 text-center py-2 text-xs font-bold rounded-lg text-slate-600 hover:text-slate-900 transition-all duration-200";
+                }
+            }
+        }
+
+        function scrollToSlide(index) {
+            const container = document.getElementById('slidesContainer');
+            const slide = document.getElementById(`slide${index}`);
+            container.scrollTo({
+                left: slide.offsetLeft - container.offsetLeft,
+                behavior: 'smooth'
+            });
+        }
+
+        // BARU: FUNGSI TOGGLE COLLAPSIBLE ACCORDION CHECKLIST
+        function toggleChecklistDropdown() {
+            const content = document.getElementById('dropdownContent');
+            const arrow = document.getElementById('dropdownArrow');
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                arrow.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('hidden');
+                arrow.style.transform = 'rotate(-90deg)';
+            }
+        }
+
         function getIncomesList(m) {
             let incomesRaw = localStorage.getItem(`inc_${m}`);
-            
-            // Jika benar-benar belum pernah diinisialisasi (null), berikan baseline rekomendasi awal
             if (incomesRaw === null) {
                 const defaultIncomes = [{ category: 'Gaji Pokok', desc: 'Gaji Pokok Baseline FiberStar', amount: BASE_GAJI, time: 'Sistem' }];
                 localStorage.setItem(`inc_${m}`, JSON.stringify(defaultIncomes));
                 return defaultIncomes;
             }
-            
-            // Jika sudah ada (termasuk array kosong [] karena dihapus pengguna), biarkan apa adanya
             return JSON.parse(incomesRaw);
         }
 
         function getCalculatedData(m) {
             const debts = rawDebts[m];
             const incomes = getIncomesList(m);
-            
             const gaji = incomes.reduce((sum, item) => sum + item.amount, 0);
             const tagihan_var = debts.gopay + debts.spay + debts.tiktok + debts.trvlk + debts.inddna + debts.rtn438;
             const tetap = kost_val + asrn_val + lstk_val;
-            
             const rek2 = tagihan_var + lstk_val + BUDGET_LIMIT;
             const simpan = gaji - (tagihan_var + tetap + BUDGET_LIMIT);
             const rek1 = simpan + kost_val + asrn_val;
-            
             return { gaji, gopay: debts.gopay, spay: debts.spay, tiktok: debts.tiktok, trvlk: debts.trvlk, inddna: debts.inddna, rtn438: debts.rtn438, simpan, rek1, rek2 };
         }
 
@@ -317,7 +347,6 @@
             document.getElementById('proyeksiAkhir').innerText = formatRupiah(latestGlobalBalance + remainingTarget);
 
             const currentMonthBalance = parseInt(localStorage.getItem(`mbanking_balance_${selectedMonth}`)) || 0;
-            
             let prevRecordedBalance = 0;
             for (let i = selectedIdx - 1; i >= 0; i--) {
                 let prevBal = parseInt(localStorage.getItem(`mbanking_balance_${monthOrder[i]}`)) || 0;
@@ -407,21 +436,14 @@
             const incomes = getIncomesList(currentMonth);
             const tbody = document.getElementById('incomeTableBody');
             tbody.innerHTML = '';
-
             incomes.forEach((inc, index) => {
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100">
-                        <td class="p-2.5 text-slate-400 text-[10px] font-medium font-mono">${inc.time}</td>
-                        <td class="p-2.5">
-                            <span class="px-1.5 py-0.5 bg-emerald-50 text-emerald-700 rounded-sm font-semibold text-[9px] border border-emerald-200 whitespace-nowrap">
-                                ${inc.category}
-                            </span>
-                        </td>
-                        <td class="p-2.5 text-slate-700 font-medium truncate max-w-[120px]">${inc.desc}</td>
-                        <td class="p-2.5 text-right font-bold text-slate-800 font-mono">${formatRupiah(inc.amount)}</td>
-                        <td class="p-2.5 text-center">
-                            <button onclick="deleteIncome(${index})" class="text-rose-600 hover:text-rose-900 font-semibold text-[10px] bg-rose-50 px-1.5 py-0.5 rounded cursor-pointer">Hapus</button>
-                        </td>
+                        <td class="p-2 text-slate-400 text-[10px] font-mono">${inc.time}</td>
+                        <td class="p-2"><span class="px-1.5 py-0.5 bg-emerald-50 text-emerald-700 rounded-sm font-semibold text-[9px] border border-emerald-200">${inc.category}</span></td>
+                        <td class="p-2 text-slate-700 font-medium truncate max-w-[100px]">${inc.desc}</td>
+                        <td class="p-2 text-right font-bold text-slate-800 font-mono">${formatRupiah(inc.amount)}</td>
+                        <td class="p-2 text-center"><button onclick="deleteIncome(${index})" class="text-rose-600 font-semibold text-[10px] bg-rose-50 px-1.5 py-0.5 rounded cursor-pointer">Hapus</button></td>
                     </tr>
                 `;
             });
@@ -433,17 +455,14 @@
             const categoryInput = document.getElementById('incCategory');
             const descInput = document.getElementById('incDesc');
             const amountInput = document.getElementById('incAmount');
-
             const incomes = getIncomesList(currentMonth);
             incomes.push({ category: categoryInput.value, desc: descInput.value, amount: parseInt(amountInput.value), time: getTimestamp() });
-
             localStorage.setItem(`inc_${currentMonth}`, JSON.stringify(incomes));
             descInput.value = '';
             amountInput.value = '';
             render();
         }
 
-        // FIXED: PENGHAPUSAN AMAN TANPA RE-INJEKSI OTOMATIS
         function deleteIncome(index) {
             const currentMonth = getActiveMonth();
             const incomes = getIncomesList(currentMonth);
@@ -483,26 +502,18 @@
             const emptyState = document.getElementById('emptyState');
             tbody.innerHTML = '';
             let totalSpent = 0;
-
             expenses.forEach((exp, index) => {
                 totalSpent += exp.amount;
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100">
-                        <td class="p-2.5 text-slate-400 text-[10px] font-medium font-mono">${exp.time || '-'}</td>
-                        <td class="p-2.5">
-                            <span class="px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded-sm font-medium text-[9px] border border-slate-200 whitespace-nowrap">
-                                ${exp.category || 'Lainnya'}
-                            </span>
-                        </td>
-                        <td class="p-2.5 text-slate-700 font-medium truncate max-w-[120px]">${exp.desc}</td>
-                        <td class="p-3 text-right font-bold text-slate-800 font-mono">${formatRupiah(exp.amount)}</td>
-                        <td class="p-2.5 text-center">
-                            <button onclick="deleteExpense(${index})" class="text-rose-600 hover:text-rose-900 font-semibold text-[10px] bg-rose-50 px-1.5 py-0.5 rounded cursor-pointer">Hapus</button>
-                        </td>
+                        <td class="p-2 text-slate-400 text-[10px] font-mono">${exp.time || '-'}</td>
+                        <td class="p-2"><span class="px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded-sm font-medium text-[9px] border border-slate-200">${exp.category || 'Lainnya'}</span></td>
+                        <td class="p-2 text-slate-700 font-medium truncate max-w-[100px]">${exp.desc}</td>
+                        <td class="p-2 text-right font-bold text-slate-800 font-mono">${formatRupiah(exp.amount)}</td>
+                        <td class="p-2 text-center"><button onclick="deleteExpense(${index})" class="text-rose-600 font-semibold text-[10px] bg-rose-50 px-1.5 py-0.5 rounded cursor-pointer">Hapus</button></td>
                     </tr>
                 `;
             });
-
             if(expenses.length === 0) emptyState.classList.remove('hidden');
             else emptyState.classList.add('hidden');
 
@@ -514,7 +525,7 @@
             const percent = Math.min((totalSpent / BUDGET_LIMIT) * 100, 100);
             const progressBar = document.getElementById('budgetProgressBar');
             progressBar.style.width = `${percent}%`;
-            progressBar.className = percent >= 100 ? "bg-rose-600 h-2 rounded-full transition-all" : (percent >= 80 ? "bg-amber-500 h-2 rounded-full transition-all" : "bg-emerald-600 h-2 rounded-full transition-all");
+            progressBar.className = percent >= 100 ? "bg-rose-600 h-1.5 rounded-full transition-all" : (percent >= 80 ? "bg-amber-500 h-1.5 rounded-full transition-all" : "bg-emerald-600 h-1.5 rounded-full transition-all");
         }
 
         function addExpense(e) {
@@ -523,7 +534,6 @@
             const categoryInput = document.getElementById('expCategory');
             const descInput = document.getElementById('expDesc');
             const amountInput = document.getElementById('expAmount');
-
             const expenses = JSON.parse(localStorage.getItem(`exp_${currentMonth}`)) || [];
             expenses.push({ category: categoryInput.value, desc: descInput.value, amount: parseInt(amountInput.value), time: getTimestamp() });
             localStorage.setItem(`exp_${currentMonth}`, JSON.stringify(expenses));
@@ -544,54 +554,23 @@
             const currentMonth = getActiveMonth();
             document.getElementById('chartMonthLabel').innerText = `(${currentMonth})`;
             document.getElementById('chartModal').classList.remove('hidden');
-            
             const expenses = JSON.parse(localStorage.getItem(`exp_${currentMonth}`)) || [];
             const canvas = document.getElementById('categoryChart');
             const emptyState = document.getElementById('chartEmptyState');
-            
             if (expenses.length === 0) {
-                canvas.classList.add('hidden');
-                emptyState.classList.remove('hidden');
-                if (myChartInstance) { myChartInstance.destroy(); myChartInstance = null; }
-                return;
+                canvas.classList.add('hidden'); emptyState.classList.remove('hidden');
+                if (myChartInstance) { myChartInstance.destroy(); myChartInstance = null; } return;
             }
-            
-            canvas.classList.remove('hidden');
-            emptyState.classList.add('hidden');
-            
+            canvas.classList.remove('hidden'); emptyState.classList.add('hidden');
             const summary = { "Makan/Minum": 0, "Jajan/Kopi": 0, "Transportasi": 0, "Kebutuhan Kost": 0, "Transfer/Utang": 0, "Lainnya": 0 };
-            expenses.forEach(exp => {
-                const cat = exp.category || "Lainnya";
-                if (summary[cat] !== undefined) summary[cat] += exp.amount;
-                else summary["Lainnya"] += exp.amount;
-            });
-            
+            expenses.forEach(exp => { const cat = exp.category || "Lainnya"; if (summary[cat] !== undefined) summary[cat] += exp.amount; else summary["Lainnya"] += exp.amount; });
             const labels = Object.keys(summary).filter(key => summary[key] > 0);
-            const dataValues = labels.map(key => summary[key]);
             const colorMap = { "Makan/Minum": "#f87171", "Jajan/Kopi": "#fb923c", "Transportasi": "#60a5fa", "Kebutuhan Kost": "#c084fc", "Transfer/Utang": "#f43f5e", "Lainnya": "#94a3b8" };
-            
             if (myChartInstance) myChartInstance.destroy();
             myChartInstance = new Chart(canvas.getContext('2d'), {
                 type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{ data: dataValues, backgroundColor: labels.map(k => colorMap[k]), borderWidth: 2, borderColor: '#ffffff' }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10, family: 'Inter' }, padding: 6 } },
-                        tooltip: {
-                            callbacks: {
-                                label: function(c) {
-                                    const total = c.dataset.data.reduce((a, b) => a + b, 0);
-                                    return ` ${c.label}: ${formatRupiah(c.raw)} (${Math.round((c.raw / total) * 100)}%)`;
-                                }
-                            }
-                        }
-                    }
-                }
+                data: { labels: labels, datasets: [{ data: labels.map(key => summary[key]), backgroundColor: labels.map(k => colorMap[k]), borderWidth: 2, borderColor: '#ffffff' }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10, family: 'Inter' }, padding: 6 } }, tooltip: { callbacks: { label: function(c) { const total = c.dataset.data.reduce((a, b) => a + b, 0); return ` ${c.label}: ${formatRupiah(c.raw)} (${Math.round((c.raw / total) * 100)}%)`; } } } } }
             });
         }
 
