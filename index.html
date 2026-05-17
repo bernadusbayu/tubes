@@ -51,15 +51,15 @@
                 <h3 id="saldoRek2" class="text-lg font-bold text-orange-800 mt-1">Rp 0</h3>
                 <p class="text-[10px] text-orange-600 mt-1">Transfer: Tagihan + Belanja</p>
             </div>
-            <div class="bg-blue-50 p-4 rounded-xl shadow-xs border border-blue-200">
-                <p class="text-xs font-semibold text-blue-700 uppercase tracking-wider">Tabungan Tercapai</p>
-                <h3 id="tabunganTercapai" class="text-lg font-bold text-blue-800 mt-1">Rp 0</h3>
-                <p class="text-[10px] text-blue-600 mt-1">Total akumulasi s/d bulan terpilih</p>
+            <div class="bg-blue-600 p-4 rounded-xl shadow-md border border-blue-700 text-white">
+                <p class="text-xs font-semibold uppercase tracking-wider text-blue-100">Tabungan Tercapai (Riil)</p>
+                <h3 id="tabunganTercapai" class="text-xl font-bold mt-1">Rp 0</h3>
+                <p class="text-[10px] text-blue-200 mt-1">Salad Kas Riil Bersifat Tetap & Global</p>
             </div>
             <div class="bg-emerald-50 p-4 rounded-xl shadow-xs border border-emerald-200">
                 <p class="text-xs font-semibold text-emerald-700 uppercase tracking-wider">Proyeksi Akhir Des</p>
                 <h3 id="proyeksiAkhir" class="text-lg font-bold text-emerald-800 mt-1">Rp 20.747.034</h3>
-                <span class="text-[10px] text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full font-medium mt-1 inline-block">+ Sisa Uang Setoran</span>
+                <span class="text-[10px] text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full font-medium mt-1 inline-block">Target Baseline</span>
             </div>
         </div>
 
@@ -82,22 +82,30 @@
                     </div>
                 </div>
 
-                <div class="bg-white p-5 rounded-xl shadow-xs border border-slate-200 border-l-4 border-l-emerald-600">
-                    <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2 mb-1">
-                        <span>💰</span> Setor Sisa Uang H-1 Gajian
+                <div class="bg-white p-5 rounded-xl shadow-xs border border-slate-200 border-l-4 border-l-blue-600">
+                    <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2 mb-3">
+                        <span>🛡️</span> Pencatatan Setoran Tabungan
                     </h2>
-                    <p class="text-[10px] text-slate-400 mb-3">Masukkan sisa saldo Rekening 2 sebelum gajian baru untuk dialihkan langsung menjadi tabungan bersih tambahan.</p>
                     
-                    <div class="flex gap-2">
-                        <input type="number" id="leftoverInput" placeholder="Contoh: 45000" class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-2 outline-none focus:border-emerald-600">
-                        <button onclick="saveLeftover()" class="bg-[#2d6a4f] hover:bg-[#1e5128] text-white font-bold text-xs px-4 py-2 rounded transition-colors whitespace-nowrap cursor-pointer">
-                            + Setor
-                        </button>
+                    <div class="mb-4 pb-4 border-b border-slate-100">
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1.5">1. Tabungan Wajib Bulan Ini</label>
+                        <div id="wajibActionContainer">
+                            </div>
                     </div>
 
-                    <div id="leftoverBadgeContainer" class="mt-3 p-2 bg-emerald-50 rounded border border-emerald-100 flex justify-between items-center hidden">
-                        <span class="text-[11px] text-slate-600">Telah disetor H-1: <strong id="leftoverValueText" class="text-emerald-700 font-bold">Rp 0</strong></span>
-                        <button onclick="deleteLeftover()" class="text-rose-600 hover:text-rose-800 font-bold text-[10px] bg-white px-2 py-0.5 border border-rose-200 rounded cursor-pointer">Hapus</button>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">2. Setor Sisa Uang H-1 Gajian</label>
+                        <p class="text-[10px] text-slate-400 mb-2">Sisa dana belanja operasional Rekening 2 sebelum siklus gajian baru dimulai.</p>
+                        <div class="flex gap-2">
+                            <input type="number" id="leftoverInput" placeholder="Contoh: 50000" class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-2 outline-none focus:border-blue-600">
+                            <button onclick="saveLeftover()" class="bg-[#2d6a4f] hover:bg-[#1e5128] text-white font-bold text-xs px-4 py-2 rounded transition-colors whitespace-nowrap cursor-pointer">
+                                + Setor
+                            </button>
+                        </div>
+                        <div id="leftoverBadgeContainer" class="mt-2.5 p-2 bg-emerald-50 rounded border border-emerald-100 flex justify-between items-center hidden">
+                            <span class="text-[11px] text-slate-600">Sisa H-1: <strong id="leftoverValueText" class="text-emerald-700 font-bold">Rp 0</strong></span>
+                            <button onclick="deleteLeftover()" class="text-rose-600 hover:text-rose-800 font-bold text-[10px] bg-white px-2 py-0.5 border border-rose-200 rounded cursor-pointer">Batal</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -168,7 +176,6 @@
         };
 
         const BUDGET_LIMIT = 1500000;
-        const BASE_TOTAL_PROJECTION = 20747034;
 
         function formatRupiah(number) {
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
@@ -178,28 +185,26 @@
             return document.getElementById('monthSelector').value;
         }
 
-        // RE-CALCULATE TABUNGAN TERCAPAI & PROYEKSI SECARA DINAMIS
-        function renderSavingsMetrics() {
-            const currentMonth = getActiveMonth();
-            const currentIdx = monthOrder.indexOf(currentMonth);
-            
-            let runningSavings = 0;
-            let totalLeftoverAllMonths = 0;
+        // HITUNG GLOBAL TABUNGAN TERCAPAI (DARI INPUT MANUAL YANG SUDAH VALID)
+        function renderGlobalSavings() {
+            let totalActualSavings = 0;
+            let totalLeftovers = 0;
 
-            monthOrder.forEach((m, idx) => {
-                const extraLeftover = parseInt(localStorage.getItem(`leftover_${m}`)) || 0;
-                totalLeftoverAllMonths += extraLeftover;
-                
-                if (idx <= currentIdx) {
-                    runningSavings += (financialData[m].simpan + extraLeftover);
+            monthOrder.forEach(m => {
+                // Tambahkan Tabungan Wajib jika statusnya true (Telah Dikonfirmasi)
+                if (localStorage.getItem(`wajib_status_${m}`) === 'true') {
+                    totalActualSavings += financialData[m].simpan;
                 }
+                // Tambahkan Bonus Uang Sisa H-1 Belanja
+                const leftover = parseInt(localStorage.getItem(`leftover_${m}`)) || 0;
+                totalLeftovers += leftover;
             });
 
-            document.getElementById('tabunganTercapai').innerText = formatRupiah(runningSavings);
-            document.getElementById('proyeksiAkhir').innerText = formatRupiah(BASE_TOTAL_PROJECTION + totalLeftoverAllMonths);
+            // Kartu Biru menampilkan Kas Riil Terkumpul Nyata (Selalu Statis & Global)
+            document.getElementById('tabunganTercapai').innerText = formatRupiah(totalActualSavings + totalLeftovers);
         }
 
-        // ENGINE UTAMA RENDER VISUAL
+        // ENGINE RENDER UTAMA
         function render() {
             const currentMonth = getActiveMonth();
             const monthData = financialData[currentMonth];
@@ -208,10 +213,29 @@
             document.getElementById('saldoRek2').innerText = formatRupiah(monthData.rek2);
             document.getElementById('instruksiPindahan').innerText = formatRupiah(monthData.rek2);
 
-            // Perhitungan Metrik Tabungan Bersih & Bonus Leftover
-            renderSavingsMetrics();
+            // Perbarui Nilai Buku Tabungan Global & Proyeksi Akhir
+            renderGlobalSavings();
 
-            // Render Panel Sisa Uang H-1
+            // Render Pengendali Blok Tabungan Wajib Bulanan
+            const wajibActionContainer = document.getElementById('wajibActionContainer');
+            const isWajibSaved = localStorage.getItem(`wajib_status_${currentMonth}`) === 'true';
+
+            if (isWajibSaved) {
+                wajibActionContainer.innerHTML = `
+                    <div class="flex items-center justify-between bg-blue-50 border border-blue-200 rounded p-2">
+                        <span class="text-xs text-blue-700 font-semibold">✓ Berhasil Disetor: <strong>${formatRupiah(monthData.simpan)}</strong></span>
+                        <button onclick="cancelWajibDeposit()" class="text-rose-600 hover:text-rose-800 text-[10px] font-bold bg-white border border-rose-200 px-2 py-0.5 rounded cursor-pointer">Batal</button>
+                    </div>
+                `;
+            } else {
+                wajibActionContainer.innerHTML = `
+                    <button onclick="confirmWajibDeposit()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2 px-3 rounded shadow-xs transition-colors cursor-pointer text-center">
+                        + Konfirmasi Setor Tabungan Wajib (${formatRupiah(monthData.simpan)})
+                    </button>
+                `;
+            }
+
+            // Render Panel Sisa Uang H-1 Belanja
             const currentLeftover = parseInt(localStorage.getItem(`leftover_${currentMonth}`)) || 0;
             const badgeContainer = document.getElementById('leftoverBadgeContainer');
             if (currentLeftover > 0) {
@@ -266,19 +290,33 @@
             render();
         }
 
-        // INTERAKSI: SIMPAN SISA UANG H-1
+        // INTERAKSI: KONFIRMASI TABUNGAN WAJIB BULANAN
+        function confirmWajibDeposit() {
+            const currentMonth = getActiveMonth();
+            localStorage.setItem(`wajib_status_${currentMonth}`, 'true');
+            render();
+        }
+
+        // INTERAKSI: BATALKAN TABUNGAN WAJIB BULANAN
+        function cancelWajibDeposit() {
+            const currentMonth = getActiveMonth();
+            localStorage.setItem(`wajib_status_${currentMonth}`, 'false');
+            render();
+        }
+
+        // INTERAKSI: SIMPAN SISA UANG H-1 BELANJA
         function saveLeftover() {
             const currentMonth = getActiveMonth();
             const input = document.getElementById('leftoverInput');
             const val = parseInt(input.value) || 0;
             
-            if (val < 0) return;
+            if (val <= 0) return;
             localStorage.setItem(`leftover_${currentMonth}`, val);
             input.value = '';
             render();
         }
 
-        // INTERAKSI: HAPUS SETORAN SISA UANG
+        // INTERAKSI: HAPUS SETORAN SISA UANG H-1
         function deleteLeftover() {
             const currentMonth = getActiveMonth();
             localStorage.removeItem(`leftover_${currentMonth}`);
