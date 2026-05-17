@@ -34,7 +34,7 @@
         .dark .divide-slate-100 > * { border-color: #334155 !important; }
         .dark #dropdownContent { background-color: #1e293b !important; }
 
-        /* Adaptasi Eksklusif Kartu Utama Warna-Warni Agar Tetap Nyaman di Mata Saat Mode Gelap */
+        /* Adaptasi Eksklusif Kartu Utama Warna-Warni */
         .dark .bg-yellow-50\/60 { background-color: rgba(253, 224, 71, 0.04) !important; border-color: rgba(234, 179, 8, 0.3) !important; }
         .dark .text-yellow-700, .dark .text-yellow-800, .dark #saldoRek1 { color: #fef08a !important; }
         .dark .bg-orange-50\/60 { background-color: rgba(249, 115, 22, 0.04) !important; border-color: rgba(234, 88, 12, 0.3) !important; }
@@ -62,15 +62,15 @@
 
                     <div class="flex items-center gap-2 bg-[#2d6a4f] px-2.5 py-1.5 rounded-lg border border-emerald-600">
                         <label for="monthSelector" class="text-xs font-medium whitespace-nowrap">Bulan:</label>
-                        <select id="monthSelector" class="bg-white text-slate-800 text-xs rounded px-2 py-0.5 font-semibold outline-none cursor-pointer" onchange="changeMonth()">
-                            <option value="Mei">Mei 2026</option>
-                            <option value="Juni">Juni 2026</option>
-                            <option value="Juli">Juli 2026</option>
-                            <option value="Agustus">Agustus 2026</option>
-                            <option value="September">September 2026</option>
-                            <option value="Oktober">Oktober 2026</option>
-                            <option value="November">November 2026</option>
-                            <option value="Desember">Desember 2026</option>
+                        <select id="monthSelector" class="bg-white text-slate-800 text-[11px] sm:text-xs rounded px-1.5 sm:px-2 py-0.5 font-semibold outline-none cursor-pointer" onchange="changeMonth()">
+                            <option value="Mei">Siklus Mei (27 Mei - 26 Jun)</option>
+                            <option value="Juni">Siklus Jun (27 Jun - 26 Jul)</option>
+                            <option value="Juli">Siklus Jul (27 Jul - 26 Agu)</option>
+                            <option value="Agustus">Siklus Agu (27 Agu - 26 Sep)</option>
+                            <option value="September">Siklus Sep (27 Sep - 26 Okt)</option>
+                            <option value="Oktober">Siklus Okt (27 Okt - 26 Nov)</option>
+                            <option value="November">Siklus Nov (27 Nov - 26 Des)</option>
+                            <option value="Desember">Siklus Des (27 Des - 26 Jan)</option>
                         </select>
                     </div>
                 </div>
@@ -215,7 +215,7 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-2 bg-slate-100 p-2 rounded-lg border border-slate-200">
-                        <label for="expenseFilterDate" class="text-[10px] font-bold text-slate-500 uppercase whitespace-nowrap">Pilih Tanggal:</label>
+                        <label for="expenseFilterDate" class="text-[10px] font-bold text-slate-500 uppercase whitespace-nowrap">Tanggal Catat:</label>
                         <input type="date" id="expenseFilterDate" onchange="renderExpenses()" class="bg-white text-xs text-slate-800 font-bold rounded px-2.5 py-1 outline-none border border-slate-300 w-full cursor-pointer focus:border-emerald-600">
                     </div>
                 </div>
@@ -311,7 +311,6 @@
             return document.getElementById('monthSelector').value;
         }
 
-        // MANAGEMENT THEME CORE: Pengendali tema absolut bebas dari gangguan system internal device
         function setTheme(theme) {
             const icon = document.getElementById('themeIcon');
             if (theme === 'dark') {
@@ -348,14 +347,44 @@
             document.getElementById('currentLiveDate').innerText = `${days[today.getDay()]}, ${today.getDate()} ${months[today.getMonth()]} ${today.getFullYear()}`;
         }
 
+        // PERBAIKAN LOGIKA: Memaksa DatePicker Tunduk pada Rentang 27 ke 26
         function syncDatePickerWithMonth() {
             const currentMonth = getActiveMonth();
-            const monthMap = { "Mei": "05", "Juni": "06", "Juli": "07", "Agustus": "08", "September": "09", "Oktober": "10", "November": "11", "Desember": "12" };
+            const monthMap = { "Mei": 5, "Juni": 6, "Juli": 7, "Agustus": 8, "September": 9, "Oktober": 10, "November": 11, "Desember": 12 };
             const datePicker = document.getElementById('expenseFilterDate');
-            if (currentMonth === "Mei") {
-                datePicker.value = "2026-05-17";
-            } else {
-                datePicker.value = `2026-${monthMap[currentMonth]}-01`;
+            
+            const startMonth = monthMap[currentMonth];
+            const startYear = 2026;
+            
+            let endMonth = startMonth + 1;
+            let endYear = startYear;
+            if (endMonth > 12) { endMonth = 1; endYear++; }
+
+            const strStartMonth = startMonth.toString().padStart(2, '0');
+            const strEndMonth = endMonth.toString().padStart(2, '0');
+
+            // Bounding dates rentang siklus gaji
+            const minD = `${startYear}-${strStartMonth}-27`;
+            const maxD = `${endYear}-${strEndMonth}-26`;
+            
+            // Kunci komponen kalender agar pilihan di luar siklus berwarna abu-abu (disabled)
+            datePicker.min = minD;
+            datePicker.max = maxD;
+
+            const currentVal = datePicker.value;
+            const today = new Date();
+            const tYear = today.getFullYear();
+            const tMonth = (today.getMonth() + 1).toString().padStart(2, '0');
+            const tDate = today.getDate().toString().padStart(2, '0');
+            const todayStr = `${tYear}-${tMonth}-${tDate}`;
+
+            // Jika hari ini berada dalam rentang siklus yang dipilih, maka default ke hari ini
+            if (todayStr >= minD && todayStr <= maxD) {
+                datePicker.value = todayStr;
+            } 
+            // Jika tanggal yang saat ini nyangkut di input berada di luar batasan siklus, auto-reset ke tgl 27 bulan awal
+            else if (currentVal < minD || currentVal > maxD || currentVal === "") {
+                datePicker.value = minD;
             }
         }
 
@@ -517,6 +546,7 @@
                     let targetMonthIdx = baseMonthIdx;
                     let targetYear = 2026;
 
+                    // Logika Pergeseran Jatuh Tempo (Sudah otomatis menyesuaikan siklus tanggal 27)
                     if (item.dueDay < 27) {
                         targetMonthIdx += 1;
                         if (targetMonthIdx > 11) { targetMonthIdx = 0; targetYear += 1; }
