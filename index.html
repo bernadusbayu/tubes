@@ -79,7 +79,7 @@
             <button id="tab2" onclick="scrollToSlide(2)" class="flex-1 text-center py-2 text-xs font-bold rounded-lg text-slate-600 transition-all duration-200">🛍 Belanja</button>
         </div>
 
-        <div id="slidesContainer" onscroll="handleSlidesScroll()" class="flex lg:grid lg:grid-cols-3 gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth w-full hide-scrollbar pb-6 lg:pb-0">
+        <div id="slidesContainer" class="flex lg:grid lg:grid-cols-3 gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth w-full hide-scrollbar pb-6 lg:pb-0">
             
             <div id="slide0" class="w-full lg:w-full shrink-0 snap-start space-y-4">
                 <div class="bg-white rounded-xl shadow-xs border border-slate-200 overflow-hidden">
@@ -247,7 +247,19 @@
         const asrn_val = 270000;
         const lstk_val = 300000;
 
-        // FIXED DATA ENGINE: Mengubah baseline nominal cicilan 'rtn438' dari 439000 menjadi 443000 sesuai instruksi terbaru
+        // FIXED DATA ENGINE: Menyesuaikan tanggal jatuh tempo riil sesuai inputan terbaru pengguna
+        const billDueDays = {
+            gopay: 1,       // Tanggal 1 bulan berikutnya
+            spay: 5,        // Tanggal 5 bulan berikutnya
+            tiktok: 2,      // Tanggal 2 bulan berikutnya
+            trvlk: 28,      // Tanggal 28 bulan berjalan (karena >= 27)
+            inddna: 27,     // Tanggal 27 bulan berjalan (karena >= 27)
+            rtn438: 1,      // Kartu Kredit tanggal 1 bulan berikutnya
+            kost: 6,        // Pembayaran Kost tanggal 6 bulan berikutnya
+            asrn: 28,       // Asuransi Kesehatan tanggal 28 bulan berjalan
+            lstk: null      // BARU: Tagihan tidak di-input = Fleksibel (Tanpa info tanggal & Tanpa alarm H-3)
+        };
+
         const rawDebts = {
             Mei: { gopay: 1406669, spay: 219278, tiktok: 465034, trvlk: 266000, inddna: 129000, rtn438: 443000 },
             Juni: { gopay: 1305952, spay: 81702, tiktok: 305041, trvlk: 0, inddna: 129000, rtn438: 443000 },
@@ -402,33 +414,84 @@
                 balanceBadge.classList.add('hidden');
             }
 
-            // FIXED: Checklist tagihan melabeli pos pinjaman berkala menjadi 'Kartu Kredit'
+            const monthMap = { "Mei": 4, "Juni": 5, "Juli": 6, "Agustus": 7, "September": 8, "Oktober": 9, "November": 10, "Desember": 11 };
+            const indonesianMonths = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+            const baseMonthIdx = monthMap[currentMonth];
+            const today = new Date();
+            today.setHours(0,0,0,0);
+
             const checklistContainer = document.getElementById('checklistContainer');
             checklistContainer.innerHTML = '';
+            
             const tagihanList = [
-                { id: 'gopay', name: 'GoPay Later', amount: monthData.gopay },
-                { id: 'spay', name: 'Shopee PayLater', amount: monthData.spay },
-                { id: 'tiktok', name: 'TikTok PayLater', amount: monthData.tiktok },
-                { id: 'trvlk', name: 'Traveloka', amount: monthData.trvlk },
-                { id: 'inddna', name: 'Indodana', amount: monthData.inddna },
-                { id: 'rtn438', name: 'Kartu Kredit', amount: monthData.rtn438 },
-                { id: 'kost', name: 'Pembayaran Kost (Rek 1)', amount: kost_val },
-                { id: 'asrn', name: 'Asuransi Kesehatan (Rek 1)', amount: asrn_val },
-                { id: 'lstk', name: 'Tagihan Listrik & Pulsa', amount: lstk_val }
+                { id: 'gopay', name: 'GoPay Later', amount: monthData.gopay, dueDay: billDueDays.gopay },
+                { id: 'spay', name: 'Shopee PayLater', amount: monthData.spay, dueDay: billDueDays.spay },
+                { id: 'tiktok', name: 'TikTok PayLater', amount: monthData.tiktok, dueDay: billDueDays.tiktok },
+                { id: 'trvlk', name: 'Traveloka', amount: monthData.trvlk, dueDay: billDueDays.trvlk },
+                { id: 'inddna', name: 'Indodana', amount: monthData.inddna, dueDay: billDueDays.inddna },
+                { id: 'rtn438', name: 'Kartu Kredit', amount: monthData.rtn438, dueDay: billDueDays.rtn438 },
+                { id: 'kost', name: 'Pembayaran Kost (Rek 1)', amount: kost_val, dueDay: billDueDays.kost },
+                { id: 'asrn', name: 'Asuransi Kesehatan (Rek 1)', amount: asrn_val, dueDay: billDueDays.asrn },
+                { id: 'lstk', name: 'Tagihan Listrik & Pulsa', amount: lstk_val, dueDay: billDueDays.lstk }
             ].filter(item => item.amount > 0);
 
             const savedChecklist = JSON.parse(localStorage.getItem(`check_${currentMonth}`)) || {};
             let checkedCount = 0;
+
             tagihanList.forEach(item => {
-                const isChecked = savedChecklist[item.id] ? 'checked' : '';
-                if(savedChecklist[item.id]) checkedCount++;
+                const isChecked = savedChecklist[item.id] ? true : false;
+                if(isChecked) checkedCount++;
+
+                let isUrgent = false;
+                let dayLabel = '';
+                let formattedDateStr = '';
+
+                // MODIFIKASI LAYANAN: Evaluasi apakah tagihan memiliki tanggal jatuh tempo atau bersifat fleksibel
+                if (item.dueDay !== null && item.dueDay !== undefined) {
+                    let targetMonthIdx = baseMonthIdx;
+                    let targetYear = 2026;
+
+                    if (item.dueDay < 27) {
+                        targetMonthIdx += 1;
+                        if (targetMonthIdx > 11) { targetMonthIdx = 0; targetYear += 1; }
+                    }
+
+                    const dueDate = new Date(targetYear, targetMonthIdx, item.dueDay);
+                    const timeDiff = dueDate.getTime() - today.getTime();
+                    const daysRemaining = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+                    isUrgent = !isChecked && (daysRemaining <= 3);
+
+                    if (!isChecked) {
+                        if (daysRemaining < 0) dayLabel = `<span class="text-[9px] bg-red-600 text-white font-bold px-1.5 py-0.5 rounded-sm">Terlewat ${Math.abs(daysRemaining)} Hari</span>`;
+                        else if (daysRemaining === 0) dayLabel = `<span class="text-[9px] bg-amber-600 text-white font-bold px-1.5 py-0.5 rounded-sm">HARI INI</span>`;
+                        else if (daysRemaining <= 3) dayLabel = `<span class="text-[9px] bg-rose-500 text-white font-bold px-1.5 py-0.5 rounded-sm">H-${daysRemaining}</span>`;
+                    }
+                    formattedDateStr = `<span class="text-[9px] font-medium text-slate-400 mt-0.5">Jatuh Tempo: ${item.dueDay} ${indonesianMonths[dueDate.getMonth()]}</span>`;
+                } else {
+                    // Output visual untuk pos yang tidak dikunci tanggalnya oleh pengguna
+                    formattedDateStr = `<span class="text-[9px] font-medium text-emerald-600 mt-0.5">📅 Pembayaran Fleksibel</span>`;
+                }
+
                 checklistContainer.innerHTML += `
-                    <label class="flex items-center justify-between p-2.5 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer select-none transition-colors">
+                    <label class="flex items-center justify-between p-2.5 rounded-lg border select-none transition-all ${
+                        isChecked 
+                        ? 'border-slate-200 hover:bg-slate-50 bg-white' 
+                        : (isUrgent 
+                           ? 'border-red-400 bg-red-50 text-red-900 animate-pulse' 
+                           : 'border-slate-200 bg-white hover:bg-slate-50')
+                    } cursor-pointer">
                         <div class="flex items-center gap-2.5">
-                            <input type="checkbox" ${isChecked} onchange="toggleChecklist('${item.id}')" class="w-4 h-4 text-emerald-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-emerald-500 cursor-pointer">
-                            <span class="text-xs font-semibold ${isChecked ? 'line-through text-slate-400' : 'text-slate-700'}">${item.name}</span>
+                            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleChecklist('${item.id}')" class="w-4 h-4 text-emerald-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-emerald-500 cursor-pointer">
+                            <div class="flex flex-col">
+                                <span class="text-xs font-semibold ${isChecked ? 'line-through text-slate-400' : 'text-slate-700'}">${item.name}</span>
+                                ${formattedDateStr}
+                            </div>
                         </div>
-                        <span class="text-xs font-bold ${isChecked ? 'text-slate-400' : 'text-amber-700'}">${formatRupiah(item.amount)}</span>
+                        <div class="flex flex-col items-end gap-1">
+                            <span class="text-xs font-bold ${isChecked ? 'text-slate-400' : (isUrgent ? 'text-red-700' : 'text-amber-700')}">${formatRupiah(item.amount)}</span>
+                            ${dayLabel}
+                        </div>
                     </label>
                 `;
             });
@@ -495,6 +558,7 @@
             render();
         }
 
+        // Penanganan aktivasi centang checklist tagihan
         function toggleChecklist(id) {
             const currentMonth = getActiveMonth();
             const savedChecklist = JSON.parse(localStorage.getItem(`check_${currentMonth}`)) || {};
