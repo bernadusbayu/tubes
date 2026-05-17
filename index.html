@@ -14,9 +14,9 @@
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen selection:bg-emerald-100">
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen selection:bg-emerald-100 transition-colors duration-200">
 
-    <header class="bg-[#1e5128] text-white shadow-md sticky top-0 z-50">
+    <header class="bg-[#1e5128] dark:bg-[#14371b] text-white shadow-md sticky top-0 z-50 transition-colors duration-200">
         <div class="max-w-[1600px] mx-auto px-4 py-4 flex flex-row justify-between items-center gap-4">
             <div>
                 <h1 class="text-base sm:text-xl font-bold tracking-wide uppercase">Finansial Mandiri 2026</h1>
@@ -24,18 +24,24 @@
             </div>
             
             <div class="flex flex-col items-end gap-1">
-                <div class="flex items-center gap-2 bg-[#2d6a4f] px-2.5 py-1.5 rounded-lg border border-emerald-600">
-                    <label for="monthSelector" class="text-xs font-medium whitespace-nowrap">Bulan:</label>
-                    <select id="monthSelector" class="bg-white text-slate-800 text-xs rounded px-2 py-0.5 font-semibold outline-none cursor-pointer" onchange="changeMonth()">
-                        <option value="Mei">Mei 2026</option>
-                        <option value="Juni">Juni 2026</option>
-                        <option value="Juli">Juli 2026</option>
-                        <option value="Agustus">Agustus 2026</option>
-                        <option value="September">September 2026</option>
-                        <option value="Oktober">Oktober 2026</option>
-                        <option value="November">November 2026</option>
-                        <option value="Desember">Desember 2026</option>
-                    </select>
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleDarkMode()" class="bg-[#2d6a4f] hover:bg-[#347a5b] border border-emerald-600 p-1.5 rounded-lg text-xs cursor-pointer transition-colors shadow-2xs" title="Ubah Tema">
+                        <span id="themeIcon">🌙</span>
+                    </button>
+
+                    <div class="flex items-center gap-2 bg-[#2d6a4f] px-2.5 py-1.5 rounded-lg border border-emerald-600">
+                        <label for="monthSelector" class="text-xs font-medium whitespace-nowrap">Bulan:</label>
+                        <select id="monthSelector" class="bg-white text-slate-800 dark:bg-slate-800 dark:text-slate-100 text-xs rounded px-2 py-0.5 font-semibold outline-none cursor-pointer" onchange="changeMonth()">
+                            <option value="Mei">Mei 2026</option>
+                            <option value="Juni">Juni 2026</option>
+                            <option value="Juli">Juli 2026</option>
+                            <option value="Agustus">Agustus 2026</option>
+                            <option value="September">September 2026</option>
+                            <option value="Oktober">Oktober 2026</option>
+                            <option value="November">November 2026</option>
+                            <option value="Desember">Desember 2026</option>
+                        </select>
+                    </div>
                 </div>
                 <p id="currentLiveDate" class="text-[10px] text-emerald-200 font-semibold tracking-wide mt-0.5 uppercase"></p>
             </div>
@@ -45,93 +51,93 @@
     <main class="max-w-[1600px] mx-auto px-4 py-4">
         
         <div class="flex lg:grid lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-5 overflow-x-auto pb-2 snap-x snap-mandatory hide-scrollbar">
-            <div class="bg-white p-4 rounded-xl shadow-xs border border-slate-200 shrink-0 w-[calc(50%-8px)] lg:w-full snap-start">
-                <p class="text-[10px] sm:text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Total Pendapatan</p>
-                <h3 id="displayGaji" class="text-sm sm:text-base font-bold text-slate-800 mt-1">Rp 0</h3>
-                <span class="text-[9px] sm:text-[10px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-medium mt-1.5 inline-block">Akumulatif Masuk</span>
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-xs border border-slate-200 dark:border-slate-700 shrink-0 w-[calc(50%-8px)] lg:w-full snap-start transition-colors">
+                <p class="text-[10px] sm:text-[11px] font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">Total Pendapatan</p>
+                <h3 id="displayGaji" class="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-100 mt-1">Rp 0</h3>
+                <span class="text-[9px] sm:text-[10px] text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400 px-2 py-0.5 rounded-full font-medium mt-1.5 inline-block">Akumulatif Masuk</span>
             </div>
-            <div class="bg-yellow-50/60 p-4 rounded-xl shadow-xs border border-yellow-200 shrink-0 w-[calc(50%-8px)] lg:w-full snap-start">
-                <p class="text-[10px] sm:text-[11px] font-semibold text-yellow-700 uppercase tracking-wider">Target Awal Rek 1</p>
-                <h3 id="saldoRek1" class="text-sm sm:text-base font-bold text-yellow-800 mt-1">Rp 0</h3>
-                <p class="text-[9px] sm:text-[10px] text-yellow-600 mt-1">Kost + Asrn + Simpan</p>
+            <div class="bg-yellow-50/60 dark:bg-yellow-950/20 p-4 rounded-xl shadow-xs border border-yellow-200 dark:border-yellow-900/50 shrink-0 w-[calc(50%-8px)] lg:w-full snap-start transition-colors">
+                <p class="text-[10px] sm:text-[11px] font-semibold text-yellow-700 dark:text-yellow-400 uppercase tracking-wider">Target Awal Rek 1</p>
+                <h3 id="saldoRek1" class="text-sm sm:text-base font-bold text-yellow-800 dark:text-yellow-300 mt-1">Rp 0</h3>
+                <p class="text-[9px] sm:text-[10px] text-yellow-600 dark:text-yellow-500 mt-1">Kost + Asrn + Simpan</p>
             </div>
-            <div class="bg-orange-50/60 p-4 rounded-xl shadow-xs border border-orange-200 shrink-0 w-[calc(50%-8px)] lg:w-full snap-start">
-                <p class="text-[10px] sm:text-[11px] font-semibold text-orange-700 uppercase tracking-wider">Target Pindah Rek 2</p>
-                <h3 id="saldoRek2" class="text-sm sm:text-base font-bold text-orange-800 mt-1">Rp 0</h3>
-                <p class="text-[9px] sm:text-[10px] text-orange-600 mt-1">Alokasi Operasional</p>
+            <div class="bg-orange-50/60 dark:bg-orange-950/20 p-4 rounded-xl shadow-xs border border-orange-200 dark:border-orange-900/50 shrink-0 w-[calc(50%-8px)] lg:w-full snap-start transition-colors">
+                <p class="text-[10px] sm:text-[11px] font-semibold text-orange-700 dark:text-orange-400 uppercase tracking-wider">Target Pindah Rek 2</p>
+                <h3 id="saldoRek2" class="text-sm sm:text-base font-bold text-orange-800 dark:text-orange-300 mt-1">Rp 0</h3>
+                <p class="text-[9px] sm:text-[10px] text-orange-600 dark:text-orange-500 mt-1">Alokasi Operasional</p>
             </div>
-            <div class="bg-indigo-50 p-4 rounded-xl shadow-xs border border-indigo-200 shrink-0 w-[calc(50%-8px)] lg:w-full snap-start">
-                <p class="text-[10px] sm:text-[11px] font-semibold text-indigo-700 uppercase tracking-wider">Tabungan Bulan Ini</p>
-                <h3 id="tabunganBulanIni" class="text-sm sm:text-base font-bold text-indigo-800 mt-1">Rp 0</h3>
-                <p id="subTabunganBulanIni" class="text-[9px] sm:text-[10px] text-indigo-500 mt-1">Pertumbuhan bersih</p>
+            <div class="bg-indigo-50 dark:bg-indigo-950/30 p-4 rounded-xl shadow-xs border border-indigo-200 dark:border-indigo-900/50 shrink-0 w-[calc(50%-8px)] lg:w-full snap-start transition-colors">
+                <p class="text-[10px] sm:text-[11px] font-semibold text-indigo-700 dark:text-indigo-400 uppercase tracking-wider">Tabungan Bulan Ini</p>
+                <h3 id="tabunganBulanIni" class="text-sm sm:text-base font-bold text-indigo-800 dark:text-indigo-300 mt-1">Rp 0</h3>
+                <p id="subTabunganBulanIni" class="text-[9px] sm:text-[10px] text-indigo-500 dark:text-indigo-400 mt-1">Pertumbuhan bersih</p>
             </div>
-            <div class="bg-blue-600 p-4 rounded-xl shadow-md border border-blue-700 text-white shrink-0 w-[calc(50%-8px)] lg:w-full snap-start">
+            <div class="bg-blue-600 dark:bg-blue-700 p-4 rounded-xl shadow-md border border-blue-700 dark:border-blue-800 text-white shrink-0 w-[calc(50%-8px)] lg:w-full snap-start transition-colors">
                 <p class="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-blue-100">Total Uang Ditabung</p>
                 <h3 id="tabunganTercapai" class="text-sm sm:text-base font-bold mt-1">Rp 0</h3>
                 <p class="text-[9px] sm:text-[10px] text-blue-200 mt-1">Saldo Akhir M-Banking</p>
             </div>
-            <div class="bg-emerald-50 p-4 rounded-xl shadow-xs border border-emerald-200 shrink-0 w-[calc(50%-8px)] lg:w-full snap-start">
-                <p class="text-[10px] sm:text-[11px] font-semibold text-emerald-700 uppercase tracking-wider">Proyeksi Akhir Des</p>
-                <h3 id="proyeksiAkhir" class="text-sm sm:text-base font-bold text-emerald-800 mt-1">Rp 0</h3>
-                <span class="text-[9px] sm:text-[10px] text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full font-medium mt-1 inline-block">Kalkulasi Otomatis</span>
+            <div class="bg-emerald-50 dark:bg-emerald-950/30 p-4 rounded-xl shadow-xs border border-emerald-200 dark:border-emerald-900/50 shrink-0 w-[calc(50%-8px)] lg:w-full snap-start transition-colors">
+                <p class="text-[10px] sm:text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">Proyeksi Akhir Des</p>
+                <h3 id="proyeksiAkhir" class="text-sm sm:text-base font-bold text-emerald-800 dark:text-emerald-300 mt-1">Rp 0</h3>
+                <span class="text-[9px] sm:text-[10px] text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-950/50 px-2 py-0.5 rounded-full font-medium mt-1 inline-block">Kalkulasi Otomatis</span>
             </div>
         </div>
 
-        <div class="lg:hidden flex bg-slate-200 p-1 rounded-xl mb-4 gap-1 sticky top-[60px] z-40 backdrop-blur-md bg-opacity-90">
+        <div class="lg:hidden flex bg-slate-200 dark:bg-slate-800 p-1 rounded-xl mb-4 gap-1 sticky top-[60px] z-40 backdrop-blur-md bg-opacity-90 dark:bg-opacity-90 transition-colors">
             <button id="tab0" onclick="scrollToSlide(0)" class="flex-1 text-center py-2 text-xs font-bold rounded-lg bg-[#2d6a4f] text-white shadow-xs transition-all duration-200">📋 Tagihan</button>
-            <button id="tab1" onclick="scrollToSlide(1)" class="flex-1 text-center py-2 text-xs font-bold rounded-lg text-slate-600 transition-all duration-200">💰 Masuk</button>
-            <button id="tab2" onclick="scrollToSlide(2)" class="flex-1 text-center py-2 text-xs font-bold rounded-lg text-slate-600 transition-all duration-200">🛍 Belanja</button>
+            <button id="tab1" onclick="scrollToSlide(1)" class="flex-1 text-center py-2 text-xs font-bold rounded-lg text-slate-600 dark:text-slate-400 transition-all duration-200">💰 Masuk</button>
+            <button id="tab2" onclick="scrollToSlide(2)" class="flex-1 text-center py-2 text-xs font-bold rounded-lg text-slate-600 dark:text-slate-400 transition-all duration-200">🛍 Belanja</button>
         </div>
 
         <div id="slidesContainer" class="flex lg:grid lg:grid-cols-3 gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth w-full hide-scrollbar pb-6 lg:pb-0">
             
             <div id="slide0" class="w-full lg:w-full shrink-0 snap-start space-y-4">
-                <div class="bg-white rounded-xl shadow-xs border border-slate-200 overflow-hidden">
-                    <button onclick="toggleChecklistDropdown()" class="w-full flex justify-between items-center p-4 bg-slate-50 border-b border-slate-100 cursor-pointer hover:bg-slate-100/70 transition-colors">
-                        <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xs border border-slate-200 dark:border-slate-700 overflow-hidden transition-colors">
+                    <button onclick="toggleChecklistDropdown()" class="w-full flex justify-between items-center p-4 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-700 cursor-pointer hover:bg-slate-100/70 dark:hover:bg-slate-700/50 transition-colors">
+                        <h2 class="font-bold text-slate-800 dark:text-slate-100 text-sm flex items-center gap-2">
                             <span>📋</span> Checklist Bayar Tagihan
                         </h2>
                         <div class="flex items-center gap-2">
-                            <span id="tagihanCount" class="text-xs bg-slate-200 text-slate-700 font-bold px-2 py-0.5 rounded-full">0/0</span>
+                            <span id="tagihanCount" class="text-xs bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold px-2 py-0.5 rounded-full">0/0</span>
                             <span id="dropdownArrow" class="text-slate-400 font-bold text-xs transition-transform duration-200">▼</span>
                         </div>
                     </button>
                     <div id="dropdownContent" class="p-4 pt-3 space-y-2">
                         <div id="checklistContainer" class="space-y-2"></div>
-                        <div class="mt-3 p-2.5 bg-slate-50 rounded border border-slate-200">
-                            <p class="text-[11px] text-slate-600 leading-relaxed">
-                                Instruksi Pindahan: Transfer <strong id="instruksiPindahan" class="text-orange-600">Rp 0</strong> ke **Rekening 2**.
+                        <div class="mt-3 p-2.5 bg-slate-50 dark:bg-slate-700/40 rounded border border-slate-200 dark:border-slate-700">
+                            <p class="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                                Instruksi Pindahan: Transfer <strong id="instruksiPindahan" class="text-orange-600 dark:text-orange-400">Rp 0</strong> ke **Rekening 2**.
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white p-5 rounded-xl shadow-xs border border-slate-200 border-l-4 border-l-blue-600">
-                    <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2 mb-1">
-                        <span>⚙️</span> Sinkronisasi M-Banking <span id="inputMonthLabel" class="text-blue-600 font-bold"></span>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-xs border border-slate-200 dark:border-slate-700 border-l-4 border-l-blue-600 dark:border-l-blue-500 transition-colors">
+                    <h2 class="font-bold text-slate-800 dark:text-slate-100 text-sm flex items-center gap-2 mb-1">
+                        <span>⚙️</span> Sinkronisasi M-Banking <span id="inputMonthLabel" class="text-blue-600 dark:text-blue-400 font-bold"></span>
                     </h2>
-                    <p class="text-[10px] text-slate-400 mb-3">Masukkan saldo m-banking Anda di tiap akhir bulan sebelum gajihan baru masuk.</p>
+                    <p class="text-[10px] text-slate-400 dark:text-slate-400 mb-3">Masukkan saldo m-banking Anda di tiap akhir bulan sebelum gajihan baru masuk.</p>
                     <div class="flex gap-2">
-                        <input type="number" id="globalBalanceInput" placeholder="Ketik saldo m-banking..." class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-2 outline-none focus:border-blue-600">
-                        <button onclick="updateGlobalBalance()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2 rounded transition-colors whitespace-nowrap cursor-pointer">Simpan</button>
+                        <input type="number" id="globalBalanceInput" placeholder="Ketik saldo m-banking..." class="w-full text-xs bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded px-2.5 py-2 outline-none focus:border-blue-600 dark:focus:border-blue-400 text-slate-800 dark:text-slate-100">
+                        <button onclick="updateGlobalBalance()" class="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-bold text-xs px-4 py-2 rounded transition-colors whitespace-nowrap cursor-pointer">Simpan</button>
                     </div>
-                    <div id="balanceHistoryBadge" class="mt-3 p-2 bg-blue-50 rounded border border-blue-100 flex justify-between items-center hidden">
-                        <span class="text-[11px] text-slate-600">Tercatat: <strong id="loggedBalanceText" class="text-blue-700 font-bold">Rp 0</strong></span>
-                        <button onclick="resetGlobalBalance()" class="text-rose-600 hover:text-rose-800 font-bold text-[10px] bg-white px-2 py-0.5 border border-rose-200 rounded cursor-pointer">Hapus</button>
+                    <div id="balanceHistoryBadge" class="mt-3 p-2 bg-blue-50 dark:bg-blue-950/30 rounded border border-blue-100 dark:border-blue-900/50 flex justify-between items-center hidden">
+                        <span class="text-[11px] text-slate-600 dark:text-slate-300">Tercatat: <strong id="loggedBalanceText" class="text-blue-700 dark:text-blue-400 font-bold">Rp 0</strong></span>
+                        <button onclick="resetGlobalBalance()" class="text-rose-600 dark:text-rose-400 hover:text-rose-800 font-bold text-[10px] bg-white dark:bg-slate-700 px-2 py-0.5 border border-rose-200 dark:border-rose-800 rounded cursor-pointer">Hapus</button>
                     </div>
                 </div>
             </div>
 
-            <div id="slide1" class="w-full lg:w-full shrink-0 snap-start bg-white p-5 rounded-xl shadow-xs border border-slate-200">
-                <div class="border-b border-slate-100 pb-3 mb-4">
-                    <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+            <div id="slide1" class="w-full lg:w-full shrink-0 snap-start bg-white dark:bg-slate-800 p-5 rounded-xl shadow-xs border border-slate-200 dark:border-slate-700 transition-colors">
+                <div class="border-b border-slate-100 dark:border-slate-700 pb-3 mb-4">
+                    <h2 class="font-bold text-slate-800 dark:text-slate-100 text-sm flex items-center gap-2">
                         <span>💰</span> Log Aliran Uang Masuk
                     </h2>
                 </div>
-                <form id="incomeForm" onsubmit="addIncome(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-4 p-3 bg-emerald-50/40 rounded-lg border border-emerald-200">
+                <form id="incomeForm" onsubmit="addIncome(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-4 p-3 bg-emerald-50/40 dark:bg-emerald-950/20 rounded-lg border border-emerald-200 dark:border-emerald-900/50">
                     <div class="sm:col-span-3">
-                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Kategori Pendapatan</label>
-                        <select id="incCategory" class="w-full text-xs bg-white border border-slate-300 rounded px-2 py-1.5 outline-none focus:border-emerald-600 font-medium">
+                        <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Kategori Pendapatan</label>
+                        <select id="incCategory" class="w-full text-xs bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 outline-none focus:border-emerald-600 dark:focus:border-emerald-400 font-medium text-slate-800 dark:text-slate-100">
                             <option value="Gaji Pokok">💼 Gaji Pokok</option>
                             <option value="Bonus/Insentif">🎁 Bonus/Insentif</option>
                             <option value="Side Hustle">🚀 Side Hustle</option>
@@ -139,21 +145,21 @@
                         </select>
                     </div>
                     <div class="sm:col-span-2">
-                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Keterangan / Sumber</label>
-                        <input type="text" id="incDesc" required placeholder="Contoh: Gaji Pokok" class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-1.5 outline-none focus:border-emerald-600">
+                        <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Keterangan / Sumber</label>
+                        <input type="text" id="incDesc" required placeholder="Contoh: Gaji Pokok" class="w-full text-xs bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded px-2.5 py-1.5 outline-none focus:border-emerald-600 dark:focus:border-emerald-400 text-slate-800 dark:text-slate-100">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nominal (Rp)</label>
-                        <input type="number" id="incAmount" required placeholder="7590000" class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-1.5 outline-none focus:border-emerald-600">
+                        <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Nominal (Rp)</label>
+                        <input type="number" id="incAmount" required placeholder="7590000" class="w-full text-xs bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded px-2.5 py-1.5 outline-none focus:border-emerald-600 dark:focus:border-emerald-400 text-slate-800 dark:text-slate-100">
                     </div>
                     <div class="sm:col-span-3 mt-1">
-                        <button type="submit" class="w-full bg-[#2d6a4f] hover:bg-[#1e5128] text-white font-bold text-xs py-2 rounded transition-colors cursor-pointer text-center">+ Catat Uang Masuk</button>
+                        <button type="submit" class="w-full bg-[#2d6a4f] hover:bg-[#1e5128] dark:bg-emerald-600 dark:hover:bg-emerald-700 text-white font-bold text-xs py-2 rounded transition-colors cursor-pointer text-center">+ Catat Uang Masuk</button>
                     </div>
                 </form>
                 <div class="overflow-x-auto hide-scrollbar">
                     <table class="w-full text-left text-xs border-collapse whitespace-nowrap">
                         <thead>
-                            <tr class="bg-slate-100 text-slate-600 font-bold uppercase border-b border-slate-200">
+                            <tr class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold uppercase border-b border-slate-200 dark:border-slate-600">
                                 <th class="p-2">Waktu</th>
                                 <th class="p-2">Kategori</th>
                                 <th class="p-2">Keterangan</th>
@@ -161,36 +167,36 @@
                                 <th class="p-2 text-center">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody id="incomeTableBody" class="divide-y divide-slate-100"></tbody>
+                        <tbody id="incomeTableBody" class="divide-y divide-slate-100 dark:divide-slate-700"></tbody>
                     </table>
                 </div>
             </div>
 
-            <div id="slide2" class="w-full lg:w-full shrink-0 snap-start bg-white p-5 rounded-xl shadow-xs border border-slate-200">
-                <div class="border-b border-slate-100 pb-3 mb-3 flex flex-col gap-2">
+            <div id="slide2" class="w-full lg:w-full shrink-0 snap-start bg-white dark:bg-slate-800 p-5 rounded-xl shadow-xs border border-slate-200 dark:border-slate-700 transition-colors">
+                <div class="border-b border-slate-100 dark:border-slate-700 pb-3 mb-3 flex flex-col gap-2">
                     <div class="flex justify-between items-center w-full">
-                        <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                        <h2 class="font-bold text-slate-800 dark:text-slate-100 text-sm flex items-center gap-2">
                             <span>🛍️</span> Log Belanja Harian
                         </h2>
                         <div class="flex items-center gap-1.5">
-                            <button onclick="openChartModal()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-[10px] py-1 px-2 rounded border border-indigo-200 cursor-pointer shadow-2xs">📊 Grafik</button>
-                            <span id="sisaBelanja" class="text-xs font-bold text-emerald-600">Rp 1.500.000</span>
+                            <button onclick="openChartModal()" class="bg-indigo-50 dark:bg-indigo-950/50 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-indigo-700 dark:text-indigo-400 font-semibold text-[10px] py-1 px-2 rounded border border-indigo-200 dark:border-indigo-800 cursor-pointer shadow-2xs">📊 Grafik</button>
+                            <span id="sisaBelanja" class="text-xs font-bold text-emerald-600 dark:text-emerald-400">Rp 1.500.000</span>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2 bg-slate-100 p-2 rounded-lg border border-slate-200">
-                        <label for="expenseFilterDate" class="text-[10px] font-bold text-slate-500 uppercase whitespace-nowrap">Pilih Tanggal:</label>
-                        <input type="date" id="expenseFilterDate" onchange="renderExpenses()" class="bg-white text-xs text-slate-800 font-bold rounded px-2.5 py-1 outline-none border border-slate-300 w-full cursor-pointer focus:border-emerald-600">
+                    <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-700/50 p-2 rounded-lg border border-slate-200 dark:border-slate-700">
+                        <label for="expenseFilterDate" class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase whitespace-nowrap">Pilih Tanggal:</label>
+                        <input type="date" id="expenseFilterDate" onchange="renderExpenses()" class="bg-white dark:bg-slate-700 text-xs text-slate-800 dark:text-slate-100 font-bold rounded px-2.5 py-1 outline-none border border-slate-300 dark:border-slate-600 w-full cursor-pointer focus:border-emerald-600 dark:focus:border-emerald-400">
                     </div>
                 </div>
 
-                <div class="w-full bg-slate-100 rounded-full h-1.5 mb-4 overflow-hidden">
+                <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-1.5 mb-4 overflow-hidden">
                     <div id="budgetProgressBar" class="bg-emerald-600 h-1.5 rounded-full transition-all duration-300" style="width: 0%"></div>
                 </div>
 
-                <form id="expenseForm" onsubmit="addExpense(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                <form id="expenseForm" onsubmit="addExpense(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-4 p-3 bg-slate-50 dark:bg-slate-700/30 rounded-lg border border-slate-200 dark:border-slate-700">
                     <div class="sm:col-span-3">
-                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Kategori Belanja</label>
-                        <select id="expCategory" class="w-full text-xs bg-white border border-slate-300 rounded px-2 py-1.5 outline-none focus:border-emerald-600 font-medium">
+                        <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Kategori Belanja</label>
+                        <select id="expCategory" class="w-full text-xs bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 outline-none focus:border-emerald-600 dark:focus:border-emerald-400 font-medium text-slate-800 dark:text-slate-100">
                             <option value="Makan/Minum">🍔 Makan/Minum</option>
                             <option value="Jajan/Kopi">☕ Jajan/Kopi</option>
                             <option value="Transportasi">⛽ Transportasi</option>
@@ -200,22 +206,22 @@
                         </select>
                     </div>
                     <div class="sm:col-span-2">
-                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Deskripsi Barang</label>
-                        <input type="text" id="expDesc" required placeholder="Contoh: Ayam Geprek" class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-1.5 outline-none focus:border-emerald-600">
+                        <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Deskripsi Barang</label>
+                        <input type="text" id="expDesc" required placeholder="Contoh: Ayam Geprek" class="w-full text-xs bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded px-2.5 py-1.5 outline-none focus:border-emerald-600 dark:focus:border-emerald-400 text-slate-800 dark:text-slate-100">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nominal (Rp)</label>
-                        <input type="number" id="expAmount" required placeholder="30000" class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-1.5 outline-none focus:border-emerald-600">
+                        <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">Nominal (Rp)</label>
+                        <input type="number" id="expAmount" required placeholder="30000" class="w-full text-xs bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded px-2.5 py-1.5 outline-none focus:border-emerald-600 dark:focus:border-emerald-400 text-slate-800 dark:text-slate-100">
                     </div>
                     <div class="sm:col-span-3 mt-1">
-                        <button type="submit" class="w-full bg-[#2d6a4f] hover:bg-[#1e5128] text-white font-bold text-xs py-2 rounded transition-colors cursor-pointer text-center">+ Catat Pengeluaran Hari Ini</button>
+                        <button type="submit" class="w-full bg-[#2d6a4f] hover:bg-[#1e5128] dark:bg-emerald-600 dark:hover:bg-emerald-700 text-white font-bold text-xs py-2 rounded transition-colors cursor-pointer text-center">+ Catat Pengeluaran Hari Ini</button>
                     </div>
                 </form>
 
                 <div class="overflow-x-auto hide-scrollbar">
                     <table class="w-full text-left text-xs border-collapse whitespace-nowrap">
                         <thead>
-                            <tr class="bg-slate-100 text-slate-600 font-bold uppercase border-b border-slate-200">
+                            <tr class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold uppercase border-b border-slate-200 dark:border-slate-600">
                                 <th class="p-2" style="width: 70px;">Jam</th>
                                 <th class="p-2">Kategori</th>
                                 <th class="p-2">Barang</th>
@@ -223,9 +229,9 @@
                                 <th class="p-2 text-center" style="width: 50px;">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody id="expenseTableBody" class="divide-y divide-slate-100"></tbody>
+                        <tbody id="expenseTableBody" class="divide-y divide-slate-100 dark:divide-slate-700"></tbody>
                     </table>
-                    <div id="emptyState" class="text-center py-6 text-slate-400 hidden font-medium">🍃 Tidak ada transaksi belanja pada tanggal terpilih.</div>
+                    <div id="emptyState" class="text-center py-6 text-slate-400 dark:text-slate-500 hidden font-medium">🍃 Tidak ada transaksi belanja pada tanggal terpilih.</div>
                 </div>
             </div>
 
@@ -233,13 +239,13 @@
     </main>
 
     <div id="chartModal" onclick="closeChartModalOnOutside(event)" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden transition-all duration-200">
-        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 relative border border-slate-100">
-            <button onclick="closeChartModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-xl font-semibold cursor-pointer">&times;</button>
-            <div class="border-b border-slate-100 pb-2 mb-4">
-                <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">📊 Proporsi Belanja Bulanan <span id="chartMonthLabel" class="text-indigo-600"></span></h3>
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl max-w-md w-full p-6 relative border border-slate-100 dark:border-slate-700 transition-colors">
+            <button onclick="closeChartModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 text-xl font-semibold cursor-pointer">&times;</button>
+            <div class="border-b border-slate-100 dark:border-slate-700 pb-2 mb-4">
+                <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">📊 Proporsi Belanja Bulanan <span id="chartMonthLabel" class="text-indigo-600 dark:text-indigo-400"></span></h3>
             </div>
             <div class="w-full max-h-[280px] flex justify-center items-center my-4"><canvas id="categoryChart"></canvas></div>
-            <div id="chartEmptyState" class="text-center py-16 text-slate-400 hidden font-medium">❌ Belum ada item belanja harian.</div>
+            <div id="chartEmptyState" class="text-center py-16 text-slate-400 dark:text-slate-500 hidden font-medium">❌ Belum ada item belanja harian.</div>
         </div>
     </div>
 
@@ -251,17 +257,7 @@
         const asrn_val = 270000;
         const lstk_val = 300000;
 
-        const billDueDays = {
-            gopay: 1,       
-            spay: 5,        
-            tiktok: 2,      
-            trvlk: 28,      
-            inddna: 27,     
-            rtn438: 1,      
-            kost: 6,        
-            asrn: 28,       
-            lstk: null      
-        };
+        const billDueDays = { gopay: 1, spay: 5, tiktok: 2, trvlk: 28, inddna: 27, rtn438: 1, kost: 6, asrn: 28, lstk: null };
 
         const rawDebts = {
             Mei: { gopay: 1406669, spay: 219278, tiktok: 465034, trvlk: 266000, inddna: 129000, rtn438: 443000 },
@@ -284,18 +280,38 @@
             return document.getElementById('monthSelector').value;
         }
 
-        // BARU: Fungsi Otomatis untuk Meng-update Teks Hari, Tanggal, Bulan, Tahun Berjalan Berdasarkan Perangkat Anda
+        // BARU: Fungsi Pengendali Mekanisme Sakelar Dark Mode
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const icon = document.getElementById('themeIcon');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                if(icon) icon.innerText = '☀️';
+            } else {
+                document.documentElement.classList.remove('dark');
+                if(icon) icon.innerText = '🌙';
+            }
+        }
+
+        function toggleDarkMode() {
+            const icon = document.getElementById('themeIcon');
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                icon.innerText = '🌙';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                icon.innerText = '☀️';
+            }
+            if (myChartInstance) openChartModal(); // Segar grafik lingkaran agar warna teks menyesuaikan tema baru
+        }
+
         function renderLiveDate() {
             const today = new Date();
             const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
             const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-            
-            const dayName = days[today.getDay()];
-            const dateNum = today.getDate();
-            const monthName = months[today.getMonth()];
-            const yearNum = today.getFullYear();
-            
-            document.getElementById('currentLiveDate').innerText = `${dayName}, ${dateNum} ${monthName} ${yearNum}`;
+            document.getElementById('currentLiveDate').innerText = `${days[today.getDay()]}, ${today.getDate()} ${months[today.getMonth()]} ${today.getFullYear()}`;
         }
 
         function syncDatePickerWithMonth() {
@@ -322,7 +338,7 @@
                     if (i === activeIndex) {
                         tab.className = "flex-1 text-center py-2 text-xs font-bold rounded-lg bg-[#2d6a4f] text-white shadow-xs transition-all duration-200";
                     } else {
-                        tab.className = "flex-1 text-center py-2 text-xs font-bold rounded-lg text-slate-600 transition-all duration-200";
+                        tab.className = "flex-1 text-center py-2 text-xs font-bold rounded-lg text-slate-600 dark:text-slate-400 transition-all duration-200";
                     }
                 }
             }
@@ -402,11 +418,11 @@
                 const growth = currentMonthBalance - prevRecordedBalance;
                 tabunganBulanIniElement.innerText = formatRupiah(growth);
                 subTextElement.innerText = `Pertumbuhan dari bulan lalu`;
-                tabunganBulanIniElement.className = "text-sm sm:text-base font-bold text-indigo-800 mt-1";
+                tabunganBulanIniElement.className = "text-sm sm:text-base font-bold text-indigo-800 dark:text-indigo-300 mt-1";
             } else {
                 tabunganBulanIniElement.innerText = "Belum Di-update";
                 subTextElement.innerText = "Selesaikan pencatatan akhir bulan";
-                tabunganBulanIniElement.className = "text-xs font-semibold text-slate-400 mt-1.5";
+                tabunganBulanIniElement.className = "text-xs font-semibold text-slate-400 dark:text-slate-500 mt-1.5";
             }
         }
 
@@ -485,26 +501,26 @@
                     }
                     formattedDateStr = `<span class="text-[9px] font-medium text-slate-400 mt-0.5">Jatuh Tempo: ${item.dueDay} ${indonesianMonths[dueDate.getMonth()]}</span>`;
                 } else {
-                    formattedDateStr = `<span class="text-[9px] font-medium text-emerald-600 mt-0.5">📅 Pembayaran Fleksibel</span>`;
+                    formattedDateStr = `<span class="text-[9px] font-medium text-emerald-600 dark:text-emerald-400 mt-0.5">📅 Pembayaran Fleksibel</span>`;
                 }
 
                 checklistContainer.innerHTML += `
                     <label class="flex items-center justify-between p-2.5 rounded-lg border select-none transition-all ${
                         isChecked 
-                        ? 'border-slate-200 hover:bg-slate-50 bg-white' 
+                        ? 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/30 bg-white dark:bg-slate-800' 
                         : (isUrgent 
-                           ? 'border-red-400 bg-red-50 text-red-900 animate-pulse' 
-                           : 'border-slate-200 bg-white hover:bg-slate-50')
+                           ? 'border-red-400 bg-red-50 dark:bg-red-950/20 text-red-900 dark:text-red-300 animate-pulse' 
+                           : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/30')
                     } cursor-pointer">
                         <div class="flex items-center gap-2.5">
-                            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleChecklist('${item.id}')" class="w-4 h-4 text-emerald-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-emerald-500 cursor-pointer">
+                            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleChecklist('${item.id}')" class="w-4 h-4 text-emerald-600 bg-gray-100 dark:bg-slate-700 border-gray-300 dark:border-slate-600 rounded-sm focus:ring-emerald-500 cursor-pointer">
                             <div class="flex flex-col">
-                                <span class="text-xs font-semibold ${isChecked ? 'line-through text-slate-400' : 'text-slate-700'}">${item.name}</span>
+                                <span class="text-xs font-semibold ${isChecked ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-200'}">${item.name}</span>
                                 ${formattedDateStr}
                             </div>
                         </div>
                         <div class="flex flex-col items-end gap-1">
-                            <span class="text-xs font-bold ${isChecked ? 'text-slate-400' : (isUrgent ? 'text-red-700' : 'text-amber-700')}">${formatRupiah(item.amount)}</span>
+                            <span class="text-xs font-bold ${isChecked ? 'text-slate-400 dark:text-slate-500' : (isUrgent ? 'text-red-700 dark:text-red-400' : 'text-amber-700 dark:text-amber-400')}">${formatRupiah(item.amount)}</span>
                             ${dayLabel}
                         </div>
                     </label>
@@ -523,12 +539,12 @@
             tbody.innerHTML = '';
             incomes.forEach((inc, index) => {
                 tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100">
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/40 transition-colors border-b border-slate-100 dark:border-slate-700">
                         <td class="p-2 text-slate-400 text-[10px] font-mono">${inc.time}</td>
-                        <td class="p-2"><span class="px-1.5 py-0.5 bg-emerald-50 text-emerald-700 rounded-sm font-semibold text-[9px] border border-emerald-200">${inc.category}</span></td>
-                        <td class="p-2 text-slate-700 font-medium truncate max-w-[100px]">${inc.desc}</td>
-                        <td class="p-2 text-right font-bold text-slate-800 font-mono">${formatRupiah(inc.amount)}</td>
-                        <td class="p-2 text-center"><button onclick="deleteIncome(${index})" class="text-rose-600 font-semibold text-[10px] bg-rose-50 px-1.5 py-0.5 rounded cursor-pointer">Hapus</button></td>
+                        <td class="p-2"><span class="px-1.5 py-0.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 rounded-sm font-semibold text-[9px] border border-emerald-200 dark:border-emerald-800/40">${inc.category}</span></td>
+                        <td class="p-2 text-slate-700 dark:text-slate-300 font-medium truncate max-w-[100px]">${inc.desc}</td>
+                        <td class="p-2 text-right font-bold text-slate-800 dark:text-slate-100 font-mono">${formatRupiah(inc.amount)}</td>
+                        <td class="p-2 text-center"><button onclick="deleteIncome(${index})" class="text-rose-600 dark:text-rose-400 font-semibold text-[10px] bg-rose-50 dark:bg-rose-950/30 px-1.5 py-0.5 rounded cursor-pointer">Hapus</button></td>
                     </tr>
                 `;
             });
@@ -596,12 +612,12 @@
                 if (exp.date === filterDate) {
                     displayCount++;
                     tbody.innerHTML += `
-                        <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100">
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/40 transition-colors border-b border-slate-100 dark:border-slate-700">
                             <td class="p-2 text-slate-400 text-[10px] font-mono font-medium">${exp.time || '-'}</td>
-                            <td class="p-2"><span class="px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded-sm font-medium text-[9px] border border-slate-200">${exp.category || 'Lainnya'}</span></td>
-                            <td class="p-2 text-slate-700 font-medium truncate max-w-[120px]">${exp.desc}</td>
-                            <td class="p-2 text-right font-bold text-slate-800 font-mono">${formatRupiah(exp.amount)}</td>
-                            <td class="p-2 text-center"><button onclick="deleteExpense(${index})" class="text-rose-600 font-semibold text-[10px] bg-rose-50 px-1.5 py-0.5 rounded cursor-pointer">Hapus</button></td>
+                            <td class="p-2"><span class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-sm font-medium text-[9px] border border-slate-200 dark:border-slate-600">${exp.category || 'Lainnya'}</span></td>
+                            <td class="p-2 text-slate-700 dark:text-slate-300 font-medium truncate max-w-[120px]">${exp.desc}</td>
+                            <td class="p-2 text-right font-bold text-slate-800 dark:text-slate-100 font-mono">${formatRupiah(exp.amount)}</td>
+                            <td class="p-2 text-center"><button onclick="deleteExpense(${index})" class="text-rose-600 dark:text-rose-400 font-semibold text-[10px] bg-rose-50 dark:bg-rose-950/30 px-1.5 py-0.5 rounded cursor-pointer">Hapus</button></td>
                         </tr>
                     `;
                 }
@@ -613,7 +629,7 @@
             const remaining = BUDGET_LIMIT - totalSpentThisMonth;
             const sisaElement = document.getElementById('sisaBelanja');
             sisaElement.innerText = formatRupiah(remaining);
-            sisaElement.className = remaining < 0 ? "text-xs font-bold text-rose-600" : "text-xs font-bold text-emerald-600";
+            sisaElement.className = remaining < 0 ? "text-xs font-bold text-rose-600 dark:text-rose-400" : "text-xs font-bold text-emerald-600 dark:text-emerald-400";
 
             const percent = Math.min((totalSpentThisMonth / BUDGET_LIMIT) * 100, 100);
             const progressBar = document.getElementById('budgetProgressBar');
@@ -662,11 +678,16 @@
             expenses.forEach(exp => { const cat = exp.category || "Lainnya"; if (summary[cat] !== undefined) summary[cat] += exp.amount; else summary["Lainnya"] += exp.amount; });
             const labels = Object.keys(summary).filter(key => summary[key] > 0);
             const colorMap = { "Makan/Minum": "#f87171", "Jajan/Kopi": "#fb923c", "Transportasi": "#60a5fa", "Kebutuhan Kost": "#c084fc", "Transfer/Utang": "#f43f5e", "Lainnya": "#94a3b8" };
+            
+            // Konfigurasi Warna Teks Legenda Chart Otomatis (Putih di Dark Mode, Gelap di Light Mode)
+            const isDark = document.documentElement.classList.contains('dark');
+            const textColor = isDark ? '#f8fafc' : '#334155';
+
             if (myChartInstance) myChartInstance.destroy();
             myChartInstance = new Chart(canvas.getContext('2d'), {
                 type: 'doughnut',
-                data: { labels: labels, datasets: [{ data: labels.map(key => summary[key]), backgroundColor: labels.map(k => colorMap[k]), borderWidth: 2, borderColor: '#ffffff' }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10, family: 'Inter' }, padding: 6 } }, tooltip: { callbacks: { label: function(c) { const total = c.dataset.data.reduce((a, b) => a + b, 0); return ` ${c.label}: ${formatRupiah(c.raw)} (${Math.round((c.raw / total) * 100)}%)`; } } } } }
+                data: { labels: labels, datasets: [{ data: labels.map(key => summary[key]), backgroundColor: labels.map(k => colorMap[k]), borderWidth: 2, borderColor: isDark ? '#1e293b' : '#ffffff' }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, color: textColor, font: { size: 10, family: 'Inter' }, padding: 6 } }, tooltip: { callbacks: { label: function(c) { const total = c.dataset.data.reduce((a, b) => a + b, 0); return ` ${c.label}: ${formatRupiah(c.raw)} (${Math.round((c.raw / total) * 100)}%)`; } } } } }
             });
         }
 
@@ -679,7 +700,8 @@
         }
 
         window.onload = function() {
-            renderLiveDate(); // Eksekusi render teks info penanggalan riil hari ini
+            initTheme(); // Membaca preferensi tema tersimpan sebelum komponen di-render
+            renderLiveDate();
             syncDatePickerWithMonth();
             render();
         };
