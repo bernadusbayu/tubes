@@ -89,7 +89,7 @@
 
                 <div class="bg-white p-5 rounded-xl shadow-xs border border-slate-200 border-l-4 border-l-blue-600">
                     <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2 mb-1">
-                        <span>⚙6;</span> Sinkronisasi M-Banking <span id="inputMonthLabel" class="text-blue-600 font-bold"></span>
+                        <span>⚙️</span> Sinkronisasi M-Banking <span id="inputMonthLabel" class="text-blue-600 font-bold"></span>
                     </h2>
                     <p class="text-[10px] text-slate-400 mb-4">Setiap akhir bulan sebelum gajihan baru masuk, ketikkan angka total saldo yang tertera di m-banking Anda saat itu.</p>
                     
@@ -126,18 +126,29 @@
                     <div id="budgetProgressBar" class="bg-emerald-600 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
                 </div>
 
-                <form id="expenseForm" onsubmit="addExpense(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5 p-3 bg-slate-50 rounded-lg border border-slate-200">
-                    <div class="sm:col-span-1">
-                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Nama/Deskripsi Barang</label>
-                        <input type="text" id="expDesc" required placeholder="Contoh: Nasi Geprek, Bensin" class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-2 outline-none focus:border-emerald-600">
+                <form id="expenseForm" onsubmit="addExpense(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-3 mb-5 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Pilih Kategori</label>
+                        <select id="expCategory" class="w-full text-xs bg-white border border-slate-300 rounded px-2 py-2 outline-none focus:border-emerald-600 font-medium">
+                            <option value="Makan/Minum">🍔 Makan/Minum</option>
+                            <option value="Jajan/Kopi">☕ Jajan/Kopi</option>
+                            <option value="Transportasi">⛽ Transportasi</option>
+                            <option value="Kebutuhan Kost">🧺 Kebutuhan Kost</option>
+                            <option value="Transfer/Utang">💸 Transfer/Utang</option>
+                            <option value="Lainnya">📦 Lainnya</option>
+                        </select>
                     </div>
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Nominal (Rp)</label>
-                        <input type="number" id="expAmount" required placeholder="Contoh: 30000" class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-2 outline-none focus:border-emerald-600">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nama/Deskripsi</label>
+                        <input type="text" id="expDesc" required placeholder="Contoh: Ayam Geprek" class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-2 outline-none focus:border-emerald-600">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nominal (Rp)</label>
+                        <input type="number" id="expAmount" required placeholder="30000" class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-2 outline-none focus:border-emerald-600">
                     </div>
                     <div class="flex items-end">
-                        <button type="submit" class="w-full bg-[#2d6a4f] hover:bg-[#1e5128] text-white font-bold text-xs py-2 px-4 rounded transition-colors shadow-xs cursor-pointer">
-                            + Catat Pengeluaran
+                        <button type="submit" class="w-full bg-[#2d6a4f] hover:bg-[#1e5128] text-white font-bold text-xs py-2 px-2 rounded transition-colors shadow-xs cursor-pointer text-center">
+                            + Catat Item
                         </button>
                     </div>
                 </form>
@@ -146,9 +157,11 @@
                     <table class="w-full text-left text-xs border-collapse">
                         <thead>
                             <tr class="bg-slate-100 text-slate-600 font-bold uppercase tracking-wider border-b border-slate-200">
-                                <th class="p-3">Deskripsi Pengeluaran</th>
-                                <th class="p-3 text-right">Nominal</th>
-                                <th class="p-3 text-center" style="width: 80px;">Aksi</th>
+                                <th class="p-3" style="width: 110px;">Waktu Input</th>
+                                <th class="p-3" style="width: 110px;">Kategori</th>
+                                <th class="p-3">Deskripsi Barang</th>
+                                <th class="p-3 text-right" style="width: 110px;">Nominal</th>
+                                <th class="p-3 text-center" style="width: 70px;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="expenseTableBody" class="divide-y divide-slate-100"></tbody>
@@ -176,6 +189,8 @@
             Desember: { gopay: 0, spay: 0, tiktok: 0, trvlk: 0, inddna: 0, rtn438: 0, kost: 1850000, asrn: 270000, lstk: 300000, simpan: 3670000, rek1: 5790000, rek2: 1800000 }
         };
 
+        const BUDGET_LIMIT = 1500000;
+
         function formatRupiah(number) {
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
         }
@@ -184,12 +199,10 @@
             return document.getElementById('monthSelector').value;
         }
 
-        // PERHITUNGAN KALKULASI UTAMA (M-BANKING ENGINE)
         function calculateMetrics() {
             const selectedMonth = getActiveMonth();
             const selectedIdx = monthOrder.indexOf(selectedMonth);
 
-            // 1. Cari Saldo Terakhir yang Pernah Di-input (Global Terkini)
             let latestMonthIdx = -1;
             let latestGlobalBalance = 0;
             monthOrder.forEach((m, idx) => {
@@ -200,20 +213,16 @@
                 }
             });
 
-            // Kartu Biru menampilkan total tabungan riil terbaru Anda saat ini (Global & Persisten)
             document.getElementById('tabunganTercapai').innerText = formatRupiah(latestGlobalBalance);
 
-            // 2. Hitung Proyeksi Akhir Desember Berdasarkan Saldo Riil Terkini
             let remainingTarget = 0;
             for (let i = latestMonthIdx + 1; i < monthOrder.length; i++) {
                 remainingTarget += financialData[monthOrder[i]].simpan;
             }
             document.getElementById('proyeksiAkhir').innerText = formatRupiah(latestGlobalBalance + remainingTarget);
 
-            // 3. BARU: Hitung Tabungan Khusus Bulan Ini (Sesuai Bulan Terpilih di Dropdown)
             const currentMonthBalance = parseInt(localStorage.getItem(`mbanking_balance_${selectedMonth}`)) || 0;
             
-            // Cari saldo dari bulan tercatat sebelumnya
             let prevRecordedBalance = 0;
             for (let i = selectedIdx - 1; i >= 0; i--) {
                 let prevBal = parseInt(localStorage.getItem(`mbanking_balance_${monthOrder[i]}`)) || 0;
@@ -238,7 +247,6 @@
             }
         }
 
-        // ENGINE VISUALISASI UTAMA
         function render() {
             const currentMonth = getActiveMonth();
             const monthData = financialData[currentMonth];
@@ -248,10 +256,8 @@
             document.getElementById('instruksiPindahan').innerText = formatRupiah(monthData.rek2);
             document.getElementById('inputMonthLabel').innerText = `(${currentMonth})`;
 
-            // Jalankan Kalkulator Matematika Saldo Riil
             calculateMetrics();
 
-            // Render Badge Status Log Saldo Bulan Terpilih
             const currentMonthBalance = parseInt(localStorage.getItem(`mbanking_balance_${currentMonth}`)) || 0;
             const historyBadge = document.getElementById('balanceHistoryBadge');
             if (currentMonthBalance > 0) {
@@ -261,7 +267,6 @@
                 historyBadge.classList.add('hidden');
             }
 
-            // Checklist Tagihan Generator
             const checklistContainer = document.getElementById('checklistContainer');
             checklistContainer.innerHTML = '';
             
@@ -297,7 +302,6 @@
             renderExpenses();
         }
 
-        // INTERAKSI: UPDATE SALDO RIIL PER BULAN
         function updateGlobalBalance() {
             const currentMonth = getActiveMonth();
             const input = document.getElementById('globalBalanceInput');
@@ -309,14 +313,12 @@
             render();
         }
 
-        // INTERAKSI: RESET DATA SALDO BULAN TERPILIH
         function resetGlobalBalance() {
             const currentMonth = getActiveMonth();
             localStorage.removeItem(`mbanking_balance_${currentMonth}`);
             render();
         }
 
-        // INTERAKSI: CHECKLIST TAGIHAN
         function toggleChecklist(id) {
             const currentMonth = getActiveMonth();
             const savedChecklist = JSON.parse(localStorage.getItem(`check_${currentMonth}`)) || {};
@@ -325,7 +327,7 @@
             render();
         }
 
-        // ENGINE: LOG BELANJA HARIAN
+        // UPDATED ENGINE: RENDERING LOG TRANSAKSI DENGAN KATEGORI & KODE WAKTU NYATA
         function renderExpenses() {
             const currentMonth = getActiveMonth();
             const expenses = JSON.parse(localStorage.getItem(`exp_${currentMonth}`)) || [];
@@ -337,10 +339,21 @@
 
             expenses.forEach((exp, index) => {
                 totalSpent += exp.amount;
+                
+                // fallback jika data lama tidak punya property kategori atau waktu
+                const displayTime = exp.time || '-';
+                const displayCategory = exp.category || 'Lainnya';
+
                 tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50 transition-colors">
+                    <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100">
+                        <td class="p-3 text-slate-400 text-[11px] font-medium font-mono">${displayTime}</td>
+                        <td class="p-3">
+                            <span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-sm font-medium text-[10px] border border-slate-200">
+                                ${displayCategory}
+                            </span>
+                        </td>
                         <td class="p-3 text-slate-700 font-medium">${exp.desc}</td>
-                        <td class="p-3 text-right font-bold text-slate-800">${formatRupiah(exp.amount)}</td>
+                        <td class="p-3 text-right font-bold text-slate-800 font-mono">${formatRupiah(exp.amount)}</td>
                         <td class="p-3 text-center">
                             <button onclick="deleteExpense(${index})" class="text-rose-600 hover:text-rose-900 font-semibold text-[11px] bg-rose-50 px-2 py-0.5 rounded cursor-pointer transition-colors">Hapus</button>
                         </td>
@@ -372,16 +385,29 @@
             }
         }
 
+        // UPDATED INTERAKSI: MENANGKAP VARIABEL WAKTU & KATEGORI SAAT KLIK TOMBOL
         function addExpense(e) {
             e.preventDefault();
             const currentMonth = getActiveMonth();
+            const categoryInput = document.getElementById('expCategory');
             const descInput = document.getElementById('expDesc');
             const amountInput = document.getElementById('expAmount');
 
+            // Format waktu indonesia: "17 Mei, 12:04"
+            const now = new Date();
+            const formattedTime = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) + ', ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
             const expenses = JSON.parse(localStorage.getItem(`exp_${currentMonth}`)) || [];
-            expenses.push({ desc: descInput.value, amount: parseInt(amountInput.value) });
+            expenses.push({ 
+                category: categoryInput.value,
+                desc: descInput.value, 
+                amount: parseInt(amountInput.value),
+                time: formattedTime
+            });
+            
             localStorage.setItem(`exp_${currentMonth}`, JSON.stringify(expenses));
             
+            // Reset input text & nominal saja, kategori dibiarkan tetap
             descInput.value = '';
             amountInput.value = '';
             render();
