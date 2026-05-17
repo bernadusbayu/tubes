@@ -347,7 +347,34 @@
             document.getElementById('currentLiveDate').innerText = `${days[today.getDay()]}, ${today.getDate()} ${months[today.getMonth()]} ${today.getFullYear()}`;
         }
 
-        // PERBAIKAN LOGIKA: Memaksa DatePicker Tunduk pada Rentang 27 ke 26
+        // FITUR BARU: Auto-select siklus berdasarkan tanggal hari ini
+        function autoSelectCurrentCycle() {
+            const today = new Date();
+            const tDate = today.getDate();
+            let tMonth = today.getMonth() + 1; // 1-12
+
+            // Logika Pergeseran: Jika tanggal masih <= 26, berarti masih masuk jatah gaji bulan lalu
+            if (tDate <= 26) {
+                tMonth -= 1;
+            }
+
+            const monthMap = { 5: "Mei", 6: "Juni", 7: "Juli", 8: "Agustus", 9: "September", 10: "Oktober", 11: "November", 12: "Desember" };
+            
+            // Karena web ini start dari Siklus Mei, jika bulan < 5, fallback ke Mei
+            let activeCycle = monthMap[tMonth];
+            if (!activeCycle) {
+                activeCycle = "Mei"; 
+            }
+
+            const selectEl = document.getElementById('monthSelector');
+            for(let i=0; i<selectEl.options.length; i++){
+                if(selectEl.options[i].value === activeCycle){
+                    selectEl.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+
         function syncDatePickerWithMonth() {
             const currentMonth = getActiveMonth();
             const monthMap = { "Mei": 5, "Juni": 6, "Juli": 7, "Agustus": 8, "September": 9, "Oktober": 10, "November": 11, "Desember": 12 };
@@ -363,11 +390,9 @@
             const strStartMonth = startMonth.toString().padStart(2, '0');
             const strEndMonth = endMonth.toString().padStart(2, '0');
 
-            // Bounding dates rentang siklus gaji
             const minD = `${startYear}-${strStartMonth}-27`;
             const maxD = `${endYear}-${strEndMonth}-26`;
             
-            // Kunci komponen kalender agar pilihan di luar siklus berwarna abu-abu (disabled)
             datePicker.min = minD;
             datePicker.max = maxD;
 
@@ -378,11 +403,9 @@
             const tDate = today.getDate().toString().padStart(2, '0');
             const todayStr = `${tYear}-${tMonth}-${tDate}`;
 
-            // Jika hari ini berada dalam rentang siklus yang dipilih, maka default ke hari ini
             if (todayStr >= minD && todayStr <= maxD) {
                 datePicker.value = todayStr;
             } 
-            // Jika tanggal yang saat ini nyangkut di input berada di luar batasan siklus, auto-reset ke tgl 27 bulan awal
             else if (currentVal < minD || currentVal > maxD || currentVal === "") {
                 datePicker.value = minD;
             }
@@ -546,7 +569,6 @@
                     let targetMonthIdx = baseMonthIdx;
                     let targetYear = 2026;
 
-                    // Logika Pergeseran Jatuh Tempo (Sudah otomatis menyesuaikan siklus tanggal 27)
                     if (item.dueDay < 27) {
                         targetMonthIdx += 1;
                         if (targetMonthIdx > 11) { targetMonthIdx = 0; targetYear += 1; }
@@ -765,6 +787,7 @@
         window.onload = function() {
             initTheme(); 
             renderLiveDate();
+            autoSelectCurrentCycle(); // BARIS BARU: Menjalankan pendeteksi siklus saat web dimuat
             syncDatePickerWithMonth();
             render();
         };
