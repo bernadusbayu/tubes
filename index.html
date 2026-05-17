@@ -76,7 +76,7 @@
         <div class="lg:hidden flex bg-slate-200 p-1 rounded-xl mb-4 gap-1 sticky top-[60px] z-40 backdrop-blur-md bg-opacity-90">
             <button id="tab0" onclick="scrollToSlide(0)" class="flex-1 text-center py-2 text-xs font-bold rounded-lg bg-[#2d6a4f] text-white shadow-xs transition-all duration-200">📋 Tagihan</button>
             <button id="tab1" onclick="scrollToSlide(1)" class="flex-1 text-center py-2 text-xs font-bold rounded-lg text-slate-600 transition-all duration-200">💰 Masuk</button>
-            <button id="tab2" onclick="scrollToSlide(2)" class="flex-1 text-center py-2 text-xs font-bold rounded-lg text-slate-600 transition-all duration-200">🛍 *Belanja*</button>
+            <button id="tab2" onclick="scrollToSlide(2)" class="flex-1 text-center py-2 text-xs font-bold rounded-lg text-slate-600 transition-all duration-200">🛍 Belanja</button>
         </div>
 
         <div id="slidesContainer" onscroll="handleSlidesScroll()" class="flex lg:grid lg:grid-cols-3 gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth w-full hide-scrollbar pb-6 lg:pb-0">
@@ -173,7 +173,6 @@
                             <span id="sisaBelanja" class="text-xs font-bold text-emerald-600">Rp 1.500.000</span>
                         </div>
                     </div>
-                    
                     <div class="flex items-center gap-2 bg-slate-100 p-2 rounded-lg border border-slate-200">
                         <label for="expenseFilterDate" class="text-[10px] font-bold text-slate-500 uppercase whitespace-nowrap">Pilih Tanggal:</label>
                         <input type="date" id="expenseFilterDate" onchange="renderExpenses()" class="bg-white text-xs text-slate-800 font-bold rounded px-2.5 py-1 outline-none border border-slate-300 w-full cursor-pointer focus:border-emerald-600">
@@ -248,12 +247,13 @@
         const asrn_val = 270000;
         const lstk_val = 300000;
 
+        // FIXED DATA ENGINE: Mengubah baseline nominal cicilan 'rtn438' dari 439000 menjadi 443000 sesuai instruksi terbaru
         const rawDebts = {
-            Mei: { gopay: 1406669, spay: 219278, tiktok: 465034, trvlk: 266000, inddna: 129000, rtn438: 439000 },
-            Juni: { gopay: 1305952, spay: 81702, tiktok: 305041, trvlk: 0, inddna: 129000, rtn438: 439000 },
-            Juli: { gopay: 725641, spay: 81700, tiktok: 190470, trvlk: 0, inddna: 129000, rtn438: 439000 },
-            Agustus: { gopay: 165867, spay: 27095, tiktok: 178698, trvlk: 0, inddna: 129000, rtn438: 439000 },
-            September: { gopay: 0, spay: 27095, tiktok: 118116, trvlk: 0, inddna: 129000, rtn438: 439000 },
+            Mei: { gopay: 1406669, spay: 219278, tiktok: 465034, trvlk: 266000, inddna: 129000, rtn438: 443000 },
+            Juni: { gopay: 1305952, spay: 81702, tiktok: 305041, trvlk: 0, inddna: 129000, rtn438: 443000 },
+            Juli: { gopay: 725641, spay: 81700, tiktok: 190470, trvlk: 0, inddna: 129000, rtn438: 443000 },
+            Agustus: { gopay: 165867, spay: 27095, tiktok: 178698, trvlk: 0, inddna: 129000, rtn438: 443000 },
+            September: { gopay: 0, spay: 27095, tiktok: 118116, trvlk: 0, inddna: 129000, rtn438: 443000 },
             Oktober: { gopay: 0, spay: 27097, tiktok: 52511, trvlk: 0, inddna: 129000, rtn438: 0 },
             November: { gopay: 0, spay: 0, tiktok: 0, trvlk: 0, inddna: 0, rtn438: 0 },
             Desember: { gopay: 0, spay: 0, tiktok: 0, trvlk: 0, inddna: 0, rtn438: 0 }
@@ -269,17 +269,13 @@
             return document.getElementById('monthSelector').value;
         }
 
-        // BARU: SINKRONISASI DROPDOWN BULAN & KALENDER BELANJA HARIAN
         function syncDatePickerWithMonth() {
             const currentMonth = getActiveMonth();
             const monthMap = { "Mei": "05", "Juni": "06", "Juli": "07", "Agustus": "08", "September": "09", "Oktober": "10", "November": "11", "Desember": "12" };
             const datePicker = document.getElementById('expenseFilterDate');
-            
             if (currentMonth === "Mei") {
-                // Diatur ke tanggal 17 Mei 2026 (Hari ini)
                 datePicker.value = "2026-05-17";
             } else {
-                // Untuk bulan masa depan, default langsung ke tanggal 1 di bulan bersangkutan
                 datePicker.value = `2026-${monthMap[currentMonth]}-01`;
             }
         }
@@ -302,6 +298,8 @@
                 }
             }
         }
+
+        document.getElementById('slidesContainer').addEventListener('scroll', handleSlidesScroll);
 
         function scrollToSlide(index) {
             const container = document.getElementById('slidesContainer');
@@ -404,6 +402,7 @@
                 balanceBadge.classList.add('hidden');
             }
 
+            // FIXED: Checklist tagihan melabeli pos pinjaman berkala menjadi 'Kartu Kredit'
             const checklistContainer = document.getElementById('checklistContainer');
             checklistContainer.innerHTML = '';
             const tagihanList = [
@@ -412,7 +411,7 @@
                 { id: 'tiktok', name: 'TikTok PayLater', amount: monthData.tiktok },
                 { id: 'trvlk', name: 'Traveloka', amount: monthData.trvlk },
                 { id: 'inddna', name: 'Indodana', amount: monthData.inddna },
-                { id: 'rtn438', name: 'Rtn438 (Berkala)', amount: monthData.rtn438 },
+                { id: 'rtn438', name: 'Kartu Kredit', amount: monthData.rtn438 },
                 { id: 'kost', name: 'Pembayaran Kost (Rek 1)', amount: kost_val },
                 { id: 'asrn', name: 'Asuransi Kesehatan (Rek 1)', amount: asrn_val },
                 { id: 'lstk', name: 'Tagihan Listrik & Pulsa', amount: lstk_val }
@@ -464,10 +463,8 @@
             const descInput = document.getElementById('incDesc');
             const amountInput = document.getElementById('incAmount');
             const incomes = getIncomesList(currentMonth);
-            
             const now = new Date();
             const timeStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) + ', ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-
             incomes.push({ category: categoryInput.value, desc: descInput.value, amount: parseInt(amountInput.value), time: timeStr });
             localStorage.setItem(`inc_${currentMonth}`, JSON.stringify(incomes));
             descInput.value = ''; amountInput.value = '';
@@ -506,22 +503,18 @@
             render();
         }
 
-        // BARU & DIUBAH: MENAMPILKAN DAFTAR TRANSAKSI BELANJA YANG SUDAH DIFILTER PER HARI
         function renderExpenses() {
             const currentMonth = getActiveMonth();
             const expenses = JSON.parse(localStorage.getItem(`exp_${currentMonth}`)) || [];
-            const filterDate = document.getElementById('expenseFilterDate').value; // Membaca tanggal aktif
+            const filterDate = document.getElementById('expenseFilterDate').value;
             const tbody = document.getElementById('expenseTableBody');
             const emptyState = document.getElementById('emptyState');
-            
             tbody.innerHTML = '';
             let totalSpentThisMonth = 0;
             let displayCount = 0;
 
             expenses.forEach((exp, index) => {
-                totalSpentThisMonth += exp.amount; // Tetap hitung total bulanan untuk bar anggaran umum
-
-                // Saringan Logika: Hanya render baris jika string tanggal COCOK
+                totalSpentThisMonth += exp.amount;
                 if (exp.date === filterDate) {
                     displayCount++;
                     tbody.innerHTML += `
@@ -530,9 +523,7 @@
                             <td class="p-2"><span class="px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded-sm font-medium text-[9px] border border-slate-200">${exp.category || 'Lainnya'}</span></td>
                             <td class="p-2 text-slate-700 font-medium truncate max-w-[120px]">${exp.desc}</td>
                             <td class="p-2 text-right font-bold text-slate-800 font-mono">${formatRupiah(exp.amount)}</td>
-                            <td class="p-2 text-center">
-                                <button onclick="deleteExpense(${index})" class="text-rose-600 font-semibold text-[10px] bg-rose-50 px-1.5 py-0.5 rounded cursor-pointer">Hapus</button>
-                            </td>
+                            <td class="p-2 text-center"><button onclick="deleteExpense(${index})" class="text-rose-600 font-semibold text-[10px] bg-rose-50 px-1.5 py-0.5 rounded cursor-pointer">Hapus</button></td>
                         </tr>
                     `;
                 }
@@ -541,7 +532,6 @@
             if(displayCount === 0) emptyState.classList.remove('hidden');
             else emptyState.classList.add('hidden');
 
-            // Kalkulasi Bar Anggaran & Saldo Berbasis Total Akumulatif Bulanan
             const remaining = BUDGET_LIMIT - totalSpentThisMonth;
             const sisaElement = document.getElementById('sisaBelanja');
             sisaElement.innerText = formatRupiah(remaining);
@@ -553,7 +543,6 @@
             progressBar.className = percent >= 100 ? "bg-rose-600 h-1.5 rounded-full transition-all" : (percent >= 80 ? "bg-amber-500 h-1.5 rounded-full transition-all" : "bg-emerald-600 h-1.5 rounded-full transition-all");
         }
 
-        // BARU & DIUBAH: MENYIMPAN ATRIBUT TANGGAL YANG TERPILIH PADA KALENDER SECARA OTOMATIS
         function addExpense(e) {
             e.preventDefault();
             const currentMonth = getActiveMonth();
@@ -561,21 +550,11 @@
             const descInput = document.getElementById('expDesc');
             const amountInput = document.getElementById('expAmount');
             const filterDate = document.getElementById('expenseFilterDate').value;
-
             const now = new Date();
-            const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB'; // Simpan jam menit pengisian
+            const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
 
             const expenses = JSON.parse(localStorage.getItem(`exp_${currentMonth}`)) || [];
-            
-            // Masukkan objek baru dengan pengaman "date" terikat pada kalender terpilih
-            expenses.push({ 
-                category: categoryInput.value, 
-                desc: descInput.value, 
-                amount: parseInt(amountInput.value), 
-                date: filterDate, // Di-tag otomatis ke hari tersebut
-                time: timeStr 
-            });
-            
+            expenses.push({ category: categoryInput.value, desc: descInput.value, amount: parseInt(amountInput.value), date: filterDate, time: timeStr });
             localStorage.setItem(`exp_${currentMonth}`, JSON.stringify(expenses));
             descInput.value = ''; amountInput.value = '';
             render();
@@ -617,12 +596,12 @@
         function closeChartModalOnOutside(e) { if (e.target.id === 'chartModal') closeChartModal(); }
         
         function changeMonth() {
-            syncDatePickerWithMonth(); // Selaraskan tanggal kalender saat bulan atas diubah
+            syncDatePickerWithMonth();
             render();
         }
 
         window.onload = function() {
-            syncDatePickerWithMonth(); // Jalankan sinkronisasi awal saat web pertama kali dimuat
+            syncDatePickerWithMonth();
             render();
         };
     </script>
