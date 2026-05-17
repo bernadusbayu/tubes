@@ -6,16 +6,16 @@
     <title>Dashboard Keuangan Mandiri 2026</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700&display=swap');
-        
-        /* PERBAIKAN UTAMA: Memaksa Tailwind v4 beralih dari strategi Media Query ke strategi Selector Class */
-        @variant dark (&:where(.dark, .dark *));
-
         body { font-family: 'Inter', sans-serif; }
-        
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+
+    <style type="tailwindcss">
+        @variant dark (.dark &);
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen selection:bg-emerald-100 transition-colors duration-200">
@@ -284,11 +284,10 @@
             return document.getElementById('monthSelector').value;
         }
 
-        // Memuat status tema tersimpan
+        // Memuat status tema dari localStorage
         function initTheme() {
             const savedTheme = localStorage.getItem('theme');
             const icon = document.getElementById('themeIcon');
-            // Default mengikuti LocalStorage atau jika kosong, biarkan light mode dahulu agar bisa diganti manual
             if (savedTheme === 'dark') {
                 document.documentElement.classList.add('dark');
                 if(icon) icon.innerText = '☀️';
@@ -309,7 +308,7 @@
                 localStorage.setItem('theme', 'dark');
                 icon.innerText = '☀️';
             }
-            if (myChartInstance) openChartModal(); // Menggambar ulang grafik dengan kontras yang tepat
+            if (myChartInstance) openChartModal(); 
         }
 
         function renderLiveDate() {
@@ -348,6 +347,8 @@
                 }
             }
         }
+
+        document.getElementById('slidesContainer').addEventListener('scroll', handleSlidesScroll);
 
         function scrollToSlide(index) {
             const container = document.getElementById('slidesContainer');
@@ -637,7 +638,7 @@
             const percent = Math.min((totalSpentThisMonth / BUDGET_LIMIT) * 100, 100);
             const progressBar = document.getElementById('budgetProgressBar');
             progressBar.style.width = `${percent}%`;
-            progressBar.className = percent >= 100 ? "bg-rose-600 h-1.5 rounded-full transition-all duration-300" : (percent >= 80 ? "bg-amber-500 h-1.5 rounded-full transition-all duration-300" : "bg-emerald-600 h-1.5 rounded-full transition-all duration-300");
+            progressBar.className = percent >= 100 ? "bg-rose-600 h-1.5 rounded-full transition-all" : (percent >= 80 ? "bg-amber-500 h-1.5 rounded-full transition-all" : "bg-emerald-600 h-1.5 rounded-full transition-all");
         }
 
         function addExpense(e) {
@@ -702,7 +703,7 @@
         }
 
         window.onload = function() {
-            initTheme(); // Dieksekusi paling awal untuk mencegah flash putih
+            initTheme(); 
             renderLiveDate();
             syncDatePickerWithMonth();
             render();
