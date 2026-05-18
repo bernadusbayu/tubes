@@ -59,6 +59,7 @@
                     <div class="flex items-center gap-2 bg-[#2d6a4f] px-2.5 py-1.5 rounded-lg border border-emerald-600">
                         <label for="monthSelector" class="text-xs font-medium whitespace-nowrap">Bulan:</label>
                         <select id="monthSelector" class="bg-white text-slate-800 text-[11px] sm:text-xs rounded px-1.5 sm:px-2 py-0.5 font-semibold outline-none cursor-pointer" onchange="changeMonth()">
+                            <option value="Transisi">Siklus Transisi (18 Mei - 26 Mei)</option>
                             <option value="Mei">Siklus Mei (27 Mei - 26 Jun)</option>
                             <option value="Juni">Siklus Jun (27 Jun - 26 Jul)</option>
                             <option value="Juli">Siklus Jul (27 Jul - 26 Agu)</option>
@@ -312,7 +313,13 @@
     </div>
 
     <script>
-        const monthOrder = ["Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        const monthOrder = ["Transisi", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        
+        // KONFIGURASI SIKLUS TRANSISI
+        const TRANSISI_TOTAL = 1229562;
+        const TRANSISI_TABUNGAN = 850000; // Ganti angka ini jika ingin menambah/mengurangi target tabungan transisi
+        const TRANSISI_BUDGET = TRANSISI_TOTAL - TRANSISI_TABUNGAN;
+
         const BASE_GAJI = 7590000;
         const BUDGET_LIMIT = 1500000;
         const kost_val = 1850000;
@@ -322,6 +329,7 @@
         const billDueDays = { gopay: 1, spay: 5, tiktok: 2, trvlk: 28, inddna: 27, rtn438: 1, kost: 6, asrn: 28, lstk: null };
 
         const rawDebts = {
+            Transisi: { gopay: 0, spay: 0, tiktok: 0, trvlk: 0, inddna: 0, rtn438: 0 },
             Mei: { gopay: 1406669, spay: 219278, tiktok: 465034, trvlk: 266000, inddna: 129000, rtn438: 443000 },
             Juni: { gopay: 1305952, spay: 81702, tiktok: 305041, trvlk: 0, inddna: 129000, rtn438: 443000 },
             Juli: { gopay: 725641, spay: 81700, tiktok: 190470, trvlk: 0, inddna: 129000, rtn438: 443000 },
@@ -334,17 +342,10 @@
 
         let myChartInstance = null;
         
-        // OBJEK STATUS PRIVASI (False = Tertutup, True = Terbuka)
         let cardVis = {
-            gaji: false,
-            rek1: false,
-            rek2: false,
-            tabBulan: false,
-            tabTercapai: false,
-            proyeksi: false
+            gaji: false, rek1: false, rek2: false, tabBulan: false, tabTercapai: false, proyeksi: false
         };
 
-        // FUNGSI PENGHASIL ICON MATA (SVG)
         function getEyeIcon(isOpen) {
             return isOpen 
                 ? `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>`
@@ -402,18 +403,19 @@
 
         function autoSelectCurrentCycle() {
             const today = new Date();
+            const tYear = today.getFullYear();
             const tDate = today.getDate();
             let tMonth = today.getMonth() + 1; 
 
-            if (tDate <= 26) {
-                tMonth -= 1;
-            }
-
-            const monthMap = { 5: "Mei", 6: "Juni", 7: "Juli", 8: "Agustus", 9: "September", 10: "Oktober", 11: "November", 12: "Desember" };
-            
-            let activeCycle = monthMap[tMonth];
-            if (!activeCycle) {
-                activeCycle = "Mei"; 
+            let activeCycle = "";
+            if (tYear === 2026 && tMonth === 5 && tDate >= 18 && tDate <= 26) {
+                activeCycle = "Transisi";
+            } else {
+                if (tDate <= 26) {
+                    tMonth -= 1;
+                }
+                const monthMap = { 5: "Mei", 6: "Juni", 7: "Juli", 8: "Agustus", 9: "September", 10: "Oktober", 11: "November", 12: "Desember" };
+                activeCycle = monthMap[tMonth] || "Mei";
             }
 
             const selectEl = document.getElementById('monthSelector');
@@ -427,21 +429,27 @@
 
         function syncDatePickerWithMonth() {
             const currentMonth = getActiveMonth();
-            const monthMap = { "Mei": 5, "Juni": 6, "Juli": 7, "Agustus": 8, "September": 9, "Oktober": 10, "November": 11, "Desember": 12 };
             const datePicker = document.getElementById('expenseFilterDate');
             
-            const startMonth = monthMap[currentMonth];
-            const startYear = 2026;
-            
-            let endMonth = startMonth + 1;
-            let endYear = startYear;
-            if (endMonth > 12) { endMonth = 1; endYear++; }
+            let minD, maxD;
+            if (currentMonth === 'Transisi') {
+                minD = "2026-05-18";
+                maxD = "2026-05-26";
+            } else {
+                const monthMap = { "Mei": 5, "Juni": 6, "Juli": 7, "Agustus": 8, "September": 9, "Oktober": 10, "November": 11, "Desember": 12 };
+                const startMonth = monthMap[currentMonth];
+                const startYear = 2026;
+                
+                let endMonth = startMonth + 1;
+                let endYear = startYear;
+                if (endMonth > 12) { endMonth = 1; endYear++; }
 
-            const strStartMonth = startMonth.toString().padStart(2, '0');
-            const strEndMonth = endMonth.toString().padStart(2, '0');
+                const strStartMonth = startMonth.toString().padStart(2, '0');
+                const strEndMonth = endMonth.toString().padStart(2, '0');
 
-            const minD = `${startYear}-${strStartMonth}-27`;
-            const maxD = `${endYear}-${strEndMonth}-26`;
+                minD = `${startYear}-${strStartMonth}-27`;
+                maxD = `${endYear}-${strEndMonth}-26`;
+            }
             
             datePicker.setAttribute('min', minD);
             datePicker.setAttribute('max', maxD);
@@ -501,7 +509,9 @@
         function getIncomesList(m) {
             let incomesRaw = localStorage.getItem(`inc_${m}`);
             if (incomesRaw === null) {
-                const defaultIncomes = [{ category: 'Gaji Pokok', desc: 'Gaji Pokok Baseline FiberStar', amount: BASE_GAJI, time: 'Sistem' }];
+                const defaultIncomes = m === 'Transisi' 
+                    ? [{ category: 'Lainnya', desc: 'Saldo Aktif Transisi', amount: TRANSISI_TOTAL, time: 'Sistem' }]
+                    : [{ category: 'Gaji Pokok', desc: 'Gaji Pokok Baseline FiberStar', amount: BASE_GAJI, time: 'Sistem' }];
                 localStorage.setItem(`inc_${m}`, JSON.stringify(defaultIncomes));
                 return defaultIncomes;
             }
@@ -509,6 +519,9 @@
         }
 
         function getCalculatedData(m) {
+            if (m === 'Transisi') {
+                return { gaji: TRANSISI_TOTAL, gopay: 0, spay: 0, tiktok: 0, trvlk: 0, inddna: 0, rtn438: 0, simpan: TRANSISI_TABUNGAN, rek1: TRANSISI_TABUNGAN, rek2: TRANSISI_BUDGET };
+            }
             const debts = rawDebts[m];
             const incomes = getIncomesList(m);
             const gaji = incomes.reduce((sum, item) => sum + item.amount, 0);
@@ -531,7 +544,6 @@
                 if (bal > 0) { latestMonthIdx = idx; latestGlobalBalance = bal; }
             });
 
-            // Terapkan Logika Privasi
             document.getElementById('tabunganTercapai').innerText = cardVis.tabTercapai ? formatRupiah(latestGlobalBalance) : 'Rp •••••••';
             document.getElementById('eye-tabTercapai').innerHTML = getEyeIcon(cardVis.tabTercapai);
 
@@ -571,7 +583,6 @@
             const currentMonth = getActiveMonth();
             const monthData = getCalculatedData(currentMonth);
 
-            // Terapkan Logika Privasi ke Kartu Utama
             document.getElementById('displayGaji').innerText = cardVis.gaji ? formatRupiah(monthData.gaji) : 'Rp •••••••';
             document.getElementById('eye-gaji').innerHTML = getEyeIcon(cardVis.gaji);
 
@@ -595,7 +606,8 @@
                 balanceBadge.classList.add('hidden');
             }
 
-            const monthMap = { "Mei": 4, "Juni": 5, "Juli": 6, "Agustus": 7, "September": 8, "Oktober": 9, "November": 10, "Desember": 11 };
+            const isTransisi = (currentMonth === 'Transisi');
+            const monthMap = { "Transisi": 4, "Mei": 4, "Juni": 5, "Juli": 6, "Agustus": 7, "September": 8, "Oktober": 9, "November": 10, "Desember": 11 };
             const indonesianMonths = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
             const baseMonthIdx = monthMap[currentMonth];
             const today = new Date();
@@ -611,9 +623,9 @@
                 { id: 'trvlk', name: 'Traveloka', amount: monthData.trvlk, dueDay: billDueDays.trvlk },
                 { id: 'inddna', name: 'Indodana', amount: monthData.inddna, dueDay: billDueDays.inddna },
                 { id: 'rtn438', name: 'Kartu Kredit', amount: monthData.rtn438, dueDay: billDueDays.rtn438 },
-                { id: 'kost', name: 'Pembayaran Kost (Rek 1)', amount: kost_val, dueDay: billDueDays.kost },
-                { id: 'asrn', name: 'Asuransi Kesehatan (Rek 1)', amount: asrn_val, dueDay: billDueDays.asrn },
-                { id: 'lstk', name: 'Tagihan Listrik & Pulsa', amount: lstk_val, dueDay: billDueDays.lstk }
+                { id: 'kost', name: 'Pembayaran Kost (Rek 1)', amount: isTransisi ? 0 : kost_val, dueDay: billDueDays.kost },
+                { id: 'asrn', name: 'Asuransi Kesehatan (Rek 1)', amount: isTransisi ? 0 : asrn_val, dueDay: billDueDays.asrn },
+                { id: 'lstk', name: 'Tagihan Listrik & Pulsa', amount: isTransisi ? 0 : lstk_val, dueDay: billDueDays.lstk }
             ].filter(item => item.amount > 0);
 
             const savedChecklist = JSON.parse(localStorage.getItem(`check_${currentMonth}`)) || {};
@@ -761,7 +773,6 @@
             }
 
             const showAll = document.getElementById('showAllExpenses').checked;
-            
             const tbody = document.getElementById('expenseTableBody');
             const emptyState = document.getElementById('emptyState');
             tbody.innerHTML = '';
@@ -791,7 +802,8 @@
             if(displayCount === 0) emptyState.classList.remove('hidden');
             else emptyState.classList.add('hidden');
 
-            const remaining = BUDGET_LIMIT - totalSpentThisMonth;
+            const currentBudgetLimit = (currentMonth === 'Transisi') ? TRANSISI_BUDGET : BUDGET_LIMIT;
+            const remaining = currentBudgetLimit - totalSpentThisMonth;
             const sisaElement = document.getElementById('sisaBelanja');
             const overbudgetBadge = document.getElementById('overbudgetBadge');
             
@@ -807,7 +819,7 @@
                 overbudgetBadge.classList.add('hidden');
             }
 
-            const percent = Math.min((totalSpentThisMonth / BUDGET_LIMIT) * 100, 100);
+            const percent = Math.min((totalSpentThisMonth / currentBudgetLimit) * 100, 100);
             const progressBar = document.getElementById('budgetProgressBar');
             progressBar.style.width = `${percent}%`;
             progressBar.className = percent >= 100 ? "bg-rose-600 h-1.5 rounded-full transition-all duration-300" : (percent >= 80 ? "bg-amber-500 h-1.5 rounded-full transition-all duration-300" : "bg-emerald-600 h-1.5 rounded-full transition-all duration-300");
